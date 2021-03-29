@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+  <add sel="/icons">
+    <icon name="order_attack_engines" texture="assets\fx\gui\textures\order\order_attack.tga" height="32" width="32"></icon>
+	<icon name="order_attack_shields" texture="assets\fx\gui\textures\order\order_attack.tga" height="32" width="32"></icon>
+	<icon name="order_attack_m_turrets" texture="assets\fx\gui\textures\order\order_attack.tga" height="32" width="32"></icon>
+	<icon name="order_attack_l_turrets" texture="assets\fx\gui\textures\order\order_attack.tga" height="32" width="32"></icon>
+	<icon name="order_attack_missturr" texture="assets\fx\gui\textures\order\order_attack.tga" height="32" width="32"></icon>
+  </add>
+</diff>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!-- english -->  
+<language>
+	<!-- "Allectus: Subsystem Targeting Orders" = "ASTO" = "1 19 20 15" = "92015" in  https://www.boxentriq.com/code-breaking/letters-to-numbers -->
+	<page id="92015" voice="no">
+		<t id="1">Allectus: Subsystem Targeting Orders</t>
+		<!-- config -->
+		<t id="2">Debug log</t>
+		<t id="3">Do debug function</t>
+		<!-- orders -->
+		<t id="2000">Attack Engines</t>
+		<t id="2001">Attack Shields</t>
+		<t id="2002">Attack Wep, Lightest First</t>
+		<t id="2003">Attack Wep, Heaviest First</t>
+		<t id="2004">Attack Wep, Missiles</t>
+		<!-- Description -->		
+		<t id="3000">Attack the designated target's engines.</t>
+		<t id="3001">Attack the designated target's shields.</t>
+		<t id="3002">Attack the designated target's weapons, lightest first.</t>
+		<t id="3003">Attack the designated target's weapons, heaviest first.</t>
+		<t id="3004">Attack the designated target's missile launchers</t>
+	</page>
+</language>
