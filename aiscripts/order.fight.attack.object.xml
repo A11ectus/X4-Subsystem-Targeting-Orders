@@ -93,7 +93,7 @@
 		  
 	  <debug_text text="'weaponslist: ' + $weapons" chance="100" />
 		  
-      <set_value name="$target" exact="$weapons.{1}"/>		 	
+      <set_value name="$target" exact="$weapons.random"/>		 	
 	  <resume label="end_selecttarget"/>
 	</do_if>
 	

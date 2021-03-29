@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!-- German -->  
+<language>
+	<!-- "Allectus: Subsystem Targeting Orders" = "ASTO" = "1 19 20 15" = "92015" in  https://www.boxentriq.com/code-breaking/letters-to-numbers -->
+	<page id="92015" voice="no">
+		<t id="1">Allectus: Subsystem Zielaufträge</t>
+		<!-- config -->
+		<t id="2">Debug-Protokoll</t>
+		<t id="3">Debug-Funktion ausführen</t>
+		<!-- orders -->
+		<t id="2000">Triebwerke angreifen</t>
+		<t id="2001">Schilde angreifen</t>
+		<t id="2002">Angriff Wep, leichteste zuerst</t>
+		<t id="2003">Angriff Wep, Schwerster zuerst</t>
+		<t id="2004">Angriffs-Wp, Raketen</t>
+		<!-- Description -->		
+		<t id="3000">Greifen Sie die Triebwerke des Ziels an..</t>
+		<t id="3001">Angriff auf die Schilde des angegebenen Ziels.</t>
+		<t id="3002">Greifen Sie die Waffen des angegebenen Ziels an, die leichtesten zuerst.</t>
+		<t id="3003">Greifen Sie die Waffen des angegebenen Ziels an, die schwersten zuerst.</t>
+		<t id="3004">Angriff auf die Raketenwerfer des Ziels</t>
+		<!-- Params -->		
+		<t id="4000">Ziel-Subsystem-Fokus. Identifiziert das Subsystem-Ziel, das durch Subsystem-Zielsetzungsaufträge beabsichtigt ist. Standard: null</t>	
+	</page>
+</language>
