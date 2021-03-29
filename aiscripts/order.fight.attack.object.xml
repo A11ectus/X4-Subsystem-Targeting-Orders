@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<diff>
+
+  <add sel="//aiscript/order[@id='Attack']/params">
+    <param name="subsystemfocus" default="null" type="internal" text="{92015, 4000}" comment="Target Subsystem Focus. Identifies the subsystem target intended by subsystem targeting orders. Default: null"/>
+  </add>
+
+  <replace sel="//aiscript/attention[@min='unknown']/actions/label[@name='selecttarget']">
+	<label name="selecttarget"/>
+	
+	<wait exact="[((100 - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
+
+	<do_if value="$subsystemfocus == 'engines'">
+	
+      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
+      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+
+	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.engine" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+
+      <set_value name="$target" exact="$locsecondarytargets.random"/>	
+	  <resume label="end_selecttarget"/>
+	
+	</do_if>
+	
+	<do_if value="$subsystemfocus == 'shields'">	
+	
+      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
+      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+
+	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.shieldgenerator" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+
+	  <set_value name="$shieldgens" exact="[]"/>
+	  <set_value name="$regenmax" exact="0"/>
+	  <do_for_each name="$shieldgen" in="$locsecondarytargets">
+	  	<do_if value="@$shieldgen.maxshield == $regenmax">	
+			 <append_to_list name="$shieldgens" exact="$shieldgen"/>
+		</do_if>
+		<do_if value="@$shieldgen.maxshield gt $regenmax">		
+			<set_value name="$shieldgens" exact="[]"/>
+			<set_value name="$regenmax" exact="@$shieldgen.maxshield"/>
+			<append_to_list name="$shieldgens" exact="$shieldgen"/>
+		</do_if>
+	  </do_for_each>
+	  
+      <set_value name="$target" exact="$shieldgens.random"/>
+	  <resume label="end_selecttarget"/>
+	</do_if>
+	
+	<do_if value="$subsystemfocus == 'weps_m'">
+	
+      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
+      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+
+	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret, class.weapon]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		  
+	  <set_value name="$weapons" exact="[]"/>
+	  <set_value name="$hullmin" exact="10000000"/>
+	  <do_for_each name="$weapon" in="$locsecondarytargets">
+	  	<do_if value="@$weapon.maxhull == $hullmin">
+			 <append_to_list name="$weapons" exact="$weapon"/>
+		</do_if>
+		<do_if value="@$weapon.maxhull lt $hullmin">
+			<set_value name="$weapons" exact="[]"/>
+			<set_value name="$hullmin" exact="@$weapon.maxhull"/>
+			<append_to_list name="$weapons" exact="$weapon"/>
+		</do_if>
+	  </do_for_each>		  
+		  
+      <set_value name="$target" exact="$weapons.random"/>
+	  <resume label="end_selecttarget"/>
+	</do_if>
+	
+	<do_if value="$subsystemfocus == 'weps_l'">
+		
+      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
+      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+
+	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret, class.weapon]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		  
+	  <set_value name="$weapons" exact="[]"/>
+	  <set_value name="$hullmax" exact="0"/>
+	  <do_for_each name="$weapon" in="$locsecondarytargets">
+	  	<do_if value="@$weapon.maxhull == $hullmax">
+			<append_to_list name="$weapons" exact="$weapon"/>
+		</do_if>
+		<do_if value="@$weapon.maxhull gt $hullmax">
+			<set_value name="$weapons" exact="[]"/>
+			<set_value name="$hullmax" exact="@$weapon.maxhull"/>
+			<append_to_list name="$weapons" exact="$weapon"/>
+		</do_if>
+	  </do_for_each>		  
+		  
+	  <debug_text text="'weaponslist: ' + $weapons" chance="100" />
+		  
+      <set_value name="$target" exact="$weapons.{1}"/>		 	
+	  <resume label="end_selecttarget"/>
+	</do_if>
+	
+	<do_if value="$subsystemfocus == 'missiles'">
+	
+      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
+      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+
+	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.missileturret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+
+      <set_value name="$target" exact="$locsecondarytargets"/>	
+	  <resume label="end_selecttarget"/>
+	</do_if>
+  </replace>
+  
+  <replace sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='not $target']" pos="before">
+	<label name="end_selecttarget"/>
+	<do_if value="not $target">
+      <debug_text text="'no valid target'" chance="$debugchance"/>
+      <resume label="finish"/>
+    </do_if>
+  </replace>
+  
+</diff>

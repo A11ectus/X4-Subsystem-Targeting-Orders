@@ -19,5 +19,7 @@
 		<t id="3002">Attack the designated target's weapons, lightest first.</t>
 		<t id="3003">Attack the designated target's weapons, heaviest first.</t>
 		<t id="3004">Attack the designated target's missile launchers</t>
+		<!-- Params -->		
+		<t id="4000">Target Subsystem Focus. Identifies the subsystem target intended by subsystem targeting orders. Default: null</t>	
 	</page>
 </language>

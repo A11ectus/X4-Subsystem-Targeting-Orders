@@ -95,8 +95,9 @@
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'order_attack_engines'">
+								<create_order name="$order" object="$ship" id="'Attack'">
 									<param name="primarytarget" value="$target" />
+									<param name="subsystemfocus" value="'engines'" />
 									<param name="debugchance" value="alASTO.$debugChance" />
 								</create_order>
 							</do_if>
@@ -113,8 +114,9 @@
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'order_attack_shields'">
+								<create_order name="$order" object="$ship" id="'Attack'">
 									<param name="primarytarget" value="$target" />
+									<param name="subsystemfocus" value="'shields'" />
 									<param name="debugchance" value="alASTO.$debugChance" />
 								</create_order>
 							</do_if>
@@ -131,8 +133,9 @@
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'order_attack_m_turrets'">
+								<create_order name="$order" object="$ship" id="'Attack'">
 									<param name="primarytarget" value="$target" />
+									<param name="subsystemfocus" value="'weps_m'" />
 									<param name="debugchance" value="alASTO.$debugChance" />
 								</create_order>
 							</do_if>
@@ -149,8 +152,9 @@
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'order_attack_l_turrets'">
+								<create_order name="$order" object="$ship" id="'Attack'">
 									<param name="primarytarget" value="$target" />
+									<param name="subsystemfocus" value="'weps_l'" />
 									<param name="debugchance" value="alASTO.$debugChance" />
 								</create_order>
 							</do_if>
@@ -167,8 +171,9 @@
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'order_attack_missturr'">
+								<create_order name="$order" object="$ship" id="'Attack'">
 									<param name="primarytarget" value="$target" />
+									<param name="subsystemfocus" value="'missiles'" />
 									<param name="debugchance" value="alASTO.$debugChance" />
 								</create_order>
 							</do_if>

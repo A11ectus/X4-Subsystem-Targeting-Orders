@@ -13,7 +13,7 @@ Adds several new orders that allows you to direct your owned ships to explicitly
 
 Requirements:
 =============
-None
+SirNukes Mod Suppot API
 
 What the mod does:
 ==================
@@ -23,17 +23,12 @@ This mod adds several orders to the right click menu on the map that allow you t
 -AI order: Attack Engines -- destroy engines
 -AI order: Attack Shields -- destroy shield generators, focussing on the active shield generators that provide the most maximum shield
 -AI order: Attack Turrets, Prioritizing Light Weapons -- destroy weapons, focussing on weapons with the lowest max hp (correlates with anti-fighter weapons)
--AI order: Attack Turrets, Prioritizing Heavy Weapons -- destroy weapons, focussing on weapons with the lowest max hp (correlates with anti-capital weapons)
+-AI order: Attack Turrets, Prioritizing Heavy Weapons -- destroy weapons, focussing on weapons with the highest max hp (correlates with anti-capital weapons)
 -AI order: Attack Missile Turrets  -- destroy missile turrets
 
 Once the subsystems covered by a given order have been destroyed the order concludes and wing may be tasked elsewhere.
 
 See here for a demonstration: https://youtu.be/lxINgqgoo7U
-
-Known Issues:
-==================
-
-The order icon presents as a giant questionmark. This is purely cosmetic and does not affect the functioning of the Mod.  Any advice on how to fix this issue would be appreciated.
 
 Install:
 ========
@@ -49,3 +44,4 @@ Uninstall:
 History:
 ========
 1.0, 2021-03-27: Initial release
+1.1, 2021-03-27: Substantial refactor to address "question mark" icon issue
