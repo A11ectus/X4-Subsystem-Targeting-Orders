@@ -91,8 +91,6 @@
 		</do_if>
 	  </do_for_each>		  
 		  
-	  <debug_text text="'weaponslist: ' + $weapons" chance="100" />
-		  
       <set_value name="$target" exact="$weapons.random"/>		 	
 	  <resume label="end_selecttarget"/>
 	</do_if>
@@ -116,5 +114,13 @@
       <resume label="finish"/>
     </do_if>
   </replace>
+  
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_if[@value='$squad_attack']/do_else/do_all/do_if/create_order">
+	<param name="subsystemfocus" value="$subsystemfocus" />
+  </add>
+  
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_else/do_for_each/do_if/create_order">
+	<param name="subsystemfocus" value="$subsystemfocus" />
+  </add>
   
 </diff>

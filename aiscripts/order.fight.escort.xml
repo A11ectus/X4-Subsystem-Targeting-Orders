@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<diff>
+
+  <add sel="//aiscript/interrupts/library/actions[@name='CreateAttackOrder']/do_elseif[@value='@$enemy.canbeattacked']/create_order">
+	<param name="subsystemfocus" value="if ($assignment == assignment.attack) then $target.order.$subsystemfocus else null"/>
+  </add>
+  
+  <add sel="//aiscript/interrupts/handler[@comment='Squadron moves to attack or squadron stops attack.']/actions/do_if[@value='@$temp_squadorder.exists']/set_value[@name='$squadorder']">
+	  <set_value name="$squadorder" exact="table[ 
+		  $id = $temp_squadorder.id,
+		  $primarytarget = $temp_squadorder.$primarytarget,
+		  $secondarytargets = $temp_squadorder.$secondarytargets,
+		  $escort = $temp_squadorder.$escort,
+		  $pursuedistance = $temp_squadorder.$pursuedistance,
+		  $pursuetargets = $temp_squadorder.$pursuetargets,
+		  $allowothertargets = $temp_squadorder.$allowothertargets,
+		  $checkrelation = $temp_squadorder.$checkrelation,
+		  $disable = $temp_squadorder.$disable,
+		  $disablehullpercentagethreshold = $temp_squadorder.$disablehullpercentagethreshold,
+		  $disabletargets = $temp_squadorder.$disabletargets,
+		  $squad_attack = $temp_squadorder.$squad_attack,
+		  $boardingbehavior = $temp_squadorder.$boardingbehavior,
+		  $behaviortargetclasses = $temp_squadorder.$behaviortargetclasses,
+		  $uncover = $temp_squadorder.$uncover,
+		  $radius = $temp_squadorder.$radius,
+		  $radiusanchorpos = $temp_squadorder.$radiusanchorpos,
+		  $radiusanchorspace = $temp_squadorder.$radiusanchorspace,
+		  $internalorder = $temp_squadorder.$internalorder,
+		  $debugchance = $temp_squadorder.$debugchance,
+		  $subsystemfocus = 'shields'
+		  ]"/>
+  </add>
+  
+  <replace sel="//aiscript/init/do_if[5]/set_value[@name='$squadorder']">
+	  <set_value name="$squadorder" exact="table[ 
+		  $id = $temp_squadorder.id,
+		  $primarytarget = $temp_squadorder.$primarytarget,
+		  $secondarytargets = $temp_squadorder.$secondarytargets,
+		  $escort = $temp_squadorder.$escort,
+		  $pursuedistance = $temp_squadorder.$pursuedistance,
+		  $pursuetargets = $temp_squadorder.$pursuetargets,
+		  $allowothertargets = $temp_squadorder.$allowothertargets,
+		  $checkrelation = $temp_squadorder.$checkrelation,
+		  $disable = $temp_squadorder.$disable,
+		  $disablehullpercentagethreshold = $temp_squadorder.$disablehullpercentagethreshold,
+		  $disabletargets = $temp_squadorder.$disabletargets,
+		  $squad_attack = $temp_squadorder.$squad_attack,
+		  $boardingbehavior = $temp_squadorder.$boardingbehavior,
+		  $behaviortargetclasses = $temp_squadorder.$behaviortargetclasses,
+		  $uncover = $temp_squadorder.$uncover,
+		  $radius = $temp_squadorder.$radius,
+		  $radiusanchorpos = $temp_squadorder.$radiusanchorpos,
+		  $radiusanchorspace = $temp_squadorder.$radiusanchorspace,
+		  $internalorder = $temp_squadorder.$internalorder,
+		  $debugchance = $temp_squadorder.$debugchance,
+		  $subsystemfocus = 'shields'
+		  ]"/>
+  </replace>
+
+  <add sel="//aiscript/attention[@min='visible']/actions/do_elseif[@value='not $target.isoperational or $changedowner?']/do_if[@value='not $endontargetdeath and @this.assignedcontrolled.commander.isoperational']/do_if[@value='$locattacker?']/do_if[@value='@$squadorder.$primarytarget.canbeattacked']/create_order">
+	<param name="subsystemfocus" value="@$squadorder.$subsystemfocus" />
+  </add>
+  
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_elseif[@value='not $target.isoperational or $changedowner?']/do_if[@value='not $endontargetdeath and @this.assignedcontrolled.commander.isoperational']/do_if[@value='$locattacker?']/do_if[@value='@$squadorder.$primarytarget.canbeattacked']/create_order">
+	<param name="subsystemfocus" value="@$squadorder.$subsystemfocus" />
+  </add>
+
+</diff>

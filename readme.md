@@ -56,4 +56,5 @@ History:
 ========
 1.0, 2021-03-27: Initial release
 1.1, 2021-03-27: Substantial refactor to address "question mark" icon issue.  Thanks to Forleyor for helping figure it out.
-1.2, 2021-03-27: Added German translation; modified heaviest weapon targeting routine to allow multiple instances of the order to select different targets from the list of heaviest available weapons instead of always selecting the same target (avoids massive overkill for torp runs, but will make standard gun runs a little less effective--though more cinematic!).
+1.2, 2021-03-28: Added German translation; modified heaviest weapon targeting routine to allow multiple instances of the order to select different targets from the list of heaviest available weapons instead of always selecting the same target (avoids massive overkill for torp runs, but will make standard gun runs a little less effective--though more cinematic!).
+1.3, 2021-03-29: Improved target handling for wings. Wingmates with the "attack" assignment should now properly follow the targeting priorities of their wing leader.
