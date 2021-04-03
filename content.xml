@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_2437198154" name="SubsystemTargetingOrders" author="Allectus" version="130" date="2021-03-29" save="false" enabled="1" description="Subsystem targeting commands, Adds several new orders that allows you to direct your owned ships to explicitly target ship subsystems. Attack Engines, Attack Shields, Attack Turrets, Prioritizing Light Weapons, Attack Turrets, Prioritizing Heavy Weapons, and Attack Missile Turrets" sync="false" lastupdate="1616998059">
+<content id="ws_2437198154" name="SubsystemTargetingOrders" author="Allectus" version="200" date="2021-04-02" save="false" enabled="1" description="Subsystem targeting commands, Adds several new orders that allows you to direct your owned ships to explicitly target ship subsystems. Attack Engines, Attack Shields, Attack Weapons, and Attack specific (dock/prod/storage/def/shipyard) station modules." sync="false" lastupdate="1616998059">
   <dependency id="ws_2042901274" optional="false" name="SirNukes Mod Support APIs"/>
 </content>
