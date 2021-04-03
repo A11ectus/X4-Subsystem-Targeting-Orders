@@ -6,7 +6,7 @@
 	<param name="subsystemfocus" value="if ($assignment == assignment.attack) then $target.order.$subsystemfocus else null"/>
   </add>
   
-  <add sel="//aiscript/interrupts/handler[@comment='Squadron moves to attack or squadron stops attack.']/actions/do_if[@value='@$temp_squadorder.exists']/set_value[@name='$squadorder']">
+  <replace sel="//aiscript/interrupts/handler[@comment='Squadron moves to attack or squadron stops attack.']/actions/do_if[@value='@$temp_squadorder.exists']/set_value[@name='$squadorder']">
 	  <set_value name="$squadorder" exact="table[ 
 		  $id = $temp_squadorder.id,
 		  $primarytarget = $temp_squadorder.$primarytarget,
@@ -28,9 +28,9 @@
 		  $radiusanchorspace = $temp_squadorder.$radiusanchorspace,
 		  $internalorder = $temp_squadorder.$internalorder,
 		  $debugchance = $temp_squadorder.$debugchance,
-		  $subsystemfocus = 'shields'
+		  $subsystemfocus = @$temp_squadorder.$subsystemfocus
 		  ]"/>
-  </add>
+  </replace>
   
   <replace sel="//aiscript/init/do_if[5]/set_value[@name='$squadorder']">
 	  <set_value name="$squadorder" exact="table[ 
@@ -54,7 +54,7 @@
 		  $radiusanchorspace = $temp_squadorder.$radiusanchorspace,
 		  $internalorder = $temp_squadorder.$internalorder,
 		  $debugchance = $temp_squadorder.$debugchance,
-		  $subsystemfocus = 'shields'
+		  $subsystemfocus = @$temp_squadorder.$subsystemfocus
 		  ]"/>
   </replace>
 

@@ -10,15 +10,29 @@
 		<!-- orders -->
 		<t id="2000">Attack Engines</t>
 		<t id="2001">Attack Shields</t>
-		<t id="2002">Attack Wep, Lightest First</t>
-		<t id="2003">Attack Wep, Heaviest First</t>
-		<t id="2004">Attack Wep, Missiles</t>
+		<t id="2002">Attack Weps, Med Turrets</t>
+		<t id="2003">Attack Weps, Hvy Turrets</t>
+		<t id="2004">Attack Weps, Missile Launchers</t>
+		<t id="2005">Attack Weps, Main Batteries</t>		
+		<t id="2006">Attack Subs, Disable All</t>		
+		<t id="2007">Attack Station Docks</t>
+		<t id="2008">Attack Station Storage</t>
+		<t id="2009">Attack Station Production</t>
+		<t id="2010">Attack Station Def. Platforms</t>
+		<t id="2011">Attack Station Shipyard Platforms</t>
 		<!-- Description -->		
 		<t id="3000">Attack the designated target's engines.</t>
 		<t id="3001">Attack the designated target's shields.</t>
-		<t id="3002">Attack the designated target's weapons, lightest first.</t>
-		<t id="3003">Attack the designated target's weapons, heaviest first.</t>
-		<t id="3004">Attack the designated target's missile launchers</t>
+		<t id="3002">Attack the designated target's weapons, medium turrets.</t>
+		<t id="3003">Attack the designated target's weapons, heavy turrets.</t>	
+		<t id="3004">Attack the designated target's weapons, missile launchers</t>
+		<t id="3005">Attack the designated target's weapons, main batteries.</t>			
+		<t id="3006">Attack the designated target's subsystems: engines -> missile launchers -> M turrets -> L turrets -> shields -> batteries</t>
+		<t id="3007">Attack the designated station's dock modules</t>
+		<t id="3008">Attack the designated station's storage modules</t>
+		<t id="3009">Attack the designated station's production modules</t>
+		<t id="3010">Attack the designated station's defense platforms</t>
+		<t id="3011">Attack the designated station's shipyard/wharf platforms</t>
 		<!-- Params -->		
 		<t id="4000">Target Subsystem Focus. Identifies the subsystem target intended by subsystem targeting orders. Default: null</t>	
 	</page>

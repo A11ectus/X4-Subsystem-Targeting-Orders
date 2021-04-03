@@ -9,111 +9,168 @@
   <replace sel="//aiscript/attention[@min='unknown']/actions/label[@name='selecttarget']">
 	<label name="selecttarget"/>
 	
-	<wait exact="[((100 - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
-
-	<do_if value="$subsystemfocus == 'engines'">
+	<wait exact="[(($debugChance - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
 	
-      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
-      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+	<do_if value="$subsystemfocus">
+		<set_value name="$locprimarytarget" exact="@$primarytarget"/>
+		<set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
 
-	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.engine" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		<do_if value="$subsystemfocus == 'engines' or $subsystemfocus == 'disable'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.engine" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
 
-      <set_value name="$target" exact="$locsecondarytargets.random"/>	
-	  <resume label="end_selecttarget"/>
-	
-	</do_if>
-	
-	<do_if value="$subsystemfocus == 'shields'">	
-	
-      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
-      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
-
-	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.shieldgenerator" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
-
-	  <set_value name="$shieldgens" exact="[]"/>
-	  <set_value name="$regenmax" exact="0"/>
-	  <do_for_each name="$shieldgen" in="$locsecondarytargets">
-	  	<do_if value="@$shieldgen.maxshield == $regenmax">	
-			 <append_to_list name="$shieldgens" exact="$shieldgen"/>
-		</do_if>
-		<do_if value="@$shieldgen.maxshield gt $regenmax">		
-			<set_value name="$shieldgens" exact="[]"/>
-			<set_value name="$regenmax" exact="@$shieldgen.maxshield"/>
-			<append_to_list name="$shieldgens" exact="$shieldgen"/>
-		</do_if>
-	  </do_for_each>
-	  
-      <set_value name="$target" exact="$shieldgens.random"/>
-	  <resume label="end_selecttarget"/>
-	</do_if>
-	
-	<do_if value="$subsystemfocus == 'weps_m'">
-	
-      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
-      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
-
-	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret, class.weapon]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		  <set_value name="$target" exact="@$locsecondarytargets.random"/>	
 		  
-	  <set_value name="$weapons" exact="[]"/>
-	  <set_value name="$hullmin" exact="10000000"/>
-	  <do_for_each name="$weapon" in="$locsecondarytargets">
-	  	<do_if value="@$weapon.maxhull == $hullmin">
-			 <append_to_list name="$weapons" exact="$weapon"/>
-		</do_if>
-		<do_if value="@$weapon.maxhull lt $hullmin">
-			<set_value name="$weapons" exact="[]"/>
-			<set_value name="$hullmin" exact="@$weapon.maxhull"/>
-			<append_to_list name="$weapons" exact="$weapon"/>
-		</do_if>
-	  </do_for_each>		  
+		  <debug_text text="'Attacking Engines %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Engines %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
 		  
-      <set_value name="$target" exact="$weapons.random"/>
-	  <resume label="end_selecttarget"/>
-	</do_if>
-	
-	<do_if value="$subsystemfocus == 'weps_l'">
+		  <do_if value="$subsystemfocus == 'engines' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>
 		
-      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
-      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
-
-	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret, class.weapon]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		<do_if value="$subsystemfocus == 'missiles' or $subsystemfocus == 'disable'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.missileturret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" sortbyvalue="loop.element.maxhull"  sortdescending="true" sortlimit="3"/>	  		
 		  
-	  <set_value name="$weapons" exact="[]"/>
-	  <set_value name="$hullmax" exact="0"/>
-	  <do_for_each name="$weapon" in="$locsecondarytargets">
-	  	<do_if value="@$weapon.maxhull == $hullmax">
-			<append_to_list name="$weapons" exact="$weapon"/>
-		</do_if>
-		<do_if value="@$weapon.maxhull gt $hullmax">
-			<set_value name="$weapons" exact="[]"/>
-			<set_value name="$hullmax" exact="@$weapon.maxhull"/>
-			<append_to_list name="$weapons" exact="$weapon"/>
-		</do_if>
-	  </do_for_each>		  
+		  <set_value name="$target" exact="@$locsecondarytargets.random"/>	
+
+		  <debug_text text="'Attacking Missiles %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Missiles %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
 		  
-      <set_value name="$target" exact="$weapons.random"/>		 	
-	  <resume label="end_selecttarget"/>
-	</do_if>
-	
-	<do_if value="$subsystemfocus == 'missiles'">
-	
-      <set_value name="$locprimarytarget" exact="@$primarytarget"/>
-      <set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
+		  <do_if value="$subsystemfocus == 'missiles' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>
+		
+		<do_if value="$subsystemfocus == 'weps_m' or $subsystemfocus == 'disable'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.small, tag.medium]" sortbyvalue="loop.element.maxhull" sortlimit="3"/>	  
+		
+		  <set_value name="$target" exact="@$locsecondarytargets.random"/>  
 
-	  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.missileturret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		  <debug_text text="'Attacking M Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking M Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <do_if value="$subsystemfocus == 'weps_m' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>
+		
+		<do_if value="$subsystemfocus == 'weps_l' or $subsystemfocus == 'disable'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.large, tag.extralarge]" sortbyvalue="loop.element.maxhull" sortdescending="true" sortlimit="3"/>	  
+		
+		  <set_value name="$target" exact="@$locsecondarytargets.random"/>  	
+		  
+		  <debug_text text="'Attacking L Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking L Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <do_if value="$subsystemfocus == 'weps_l' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>
+				
+		<do_if value="$subsystemfocus == 'shields' or $subsystemfocus == 'disable'">	
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.shieldgenerator" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"  tags="[tag.large, tag.extralarge]" sortbyvalue="loop.element.maxshield" sortdescending="true"  sortlimit="3"/>	  
+			  
+		  <set_value name="$target" exact="@$locsecondarytargets.random"/>
+		  
+		  <debug_text text="'Attacking Shields %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Shields %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <do_if value="$subsystemfocus == 'shields' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>
 
-      <set_value name="$target" exact="$locsecondarytargets"/>	
-	  <resume label="end_selecttarget"/>
+		<do_if value="$subsystemfocus == 'batteries' or $subsystemfocus == 'disable'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.weapon]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.weapon]" sortbyvalue="loop.element.maxhull" sortdescending="true" sortlimit="3">
+			<match class="class.turret" negate="true"/>
+		  </find_object_component>	
+		
+		  <set_value name="$target" exact="@$locsecondarytargets.random"/>  	
+		  
+		  <debug_text text="'Attacking Batteries %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Batteries %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <do_if value="$subsystemfocus == 'batteries' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>		
+		
+		<do_if value="$subsystemfocus == 'disable'">
+			<resume label="end_selecttarget"/>
+		</do_if>
+
+		<do_if value="$subsystemfocus == 'stationdocks'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.dockarea]" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship">
+			<match state="componentstate.wreck" negate="true"/>
+		  </find_object_component>	
+		  
+		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
+		  
+		  <debug_text text="'Attacking Docks %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Docks %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <resume label="end_selecttarget"/>
+		</do_if>
+		
+		<do_if value="$subsystemfocus == 'stationstorage'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.storage]" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship">
+			<match state="componentstate.wreck" negate="true"/>
+		  </find_object_component>	
+		  
+		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
+		  
+		  <debug_text text="'Attacking Storage %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Storage %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <resume label="end_selecttarget"/>
+		</do_if>
+		
+		<do_if value="$subsystemfocus == 'stationproduction'">		
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.production]" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship">
+			<match state="componentstate.wreck" negate="true"/>
+		  </find_object_component>	
+			
+		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
+
+		  <debug_text text="'Attacking Production %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Production %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+
+		  
+		  <resume label="end_selecttarget"/>
+		</do_if>
+		
+		<do_if value="$subsystemfocus == 'stationdefense'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.defencemodule]" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship">
+			<match state="componentstate.wreck" negate="true"/>
+		  </find_object_component>			
+
+		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
+
+		  <debug_text text="'Attacking Def. Plat %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Def. Plat %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <resume label="end_selecttarget"/>
+		</do_if>
+		
+		<do_if value="$subsystemfocus == 'stationbuild'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.buildmodule]" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship">
+			<match state="componentstate.wreck" negate="true"/>
+		  </find_object_component>			
+
+		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
+
+		  <debug_text text="'Attacking Shipyard %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Shipyard %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  
+		  <resume label="end_selecttarget"/>
+		</do_if>		
+
 	</do_if>
   </replace>
-  
-  <replace sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='not $target']" pos="before">
+
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='not $target']" pos="before">
 	<label name="end_selecttarget"/>
-	<do_if value="not $target">
-      <debug_text text="'no valid target'" chance="$debugchance"/>
-      <resume label="finish"/>
-    </do_if>
-  </replace>
+  </add>
   
   <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_if[@value='$squad_attack']/do_else/do_all/do_if/create_order">
 	<param name="subsystemfocus" value="$subsystemfocus" />
