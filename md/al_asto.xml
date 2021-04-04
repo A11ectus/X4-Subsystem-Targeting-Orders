@@ -45,7 +45,7 @@
 								<set_value name="$section" exact="'selected_orders'" />
 								<set_value name="$disable_flag" exact="false" />
 								
-								<do_if value="$target.iscapitalship">
+								<do_if value="@$target.iscapitalship">
 									<find_object_component name="$subsys" object="$target" class="class.engine" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="false"/>	  
 									<do_if value="$subsys">
 										<set_value name="$disable_flag" exact="true" />
@@ -60,7 +60,7 @@
 									</do_if>
 								</do_if>
 								
-								<do_if value="$target.iscapitalship or $target.isclass.station">
+								<do_if value="@$target.iscapitalship or $target.isclass.station">
 									<find_object_component name="$subsys" object="$target" class="class.shieldgenerator" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="false"  tags="[tag.large, tag.extralarge]"/>	  
 									<do_if value="$subsys">
 										<set_value name="$disable_flag" exact="true" />

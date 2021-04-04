@@ -9,7 +9,7 @@
   <replace sel="//aiscript/attention[@min='unknown']/actions/label[@name='selecttarget']">
 	<label name="selecttarget"/>
 	
-	<wait exact="[(($debugChance - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
+	<wait exact="[(($debugchance - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
 	
 	<do_if value="$subsystemfocus">
 		<set_value name="$locprimarytarget" exact="@$primarytarget"/>
@@ -17,11 +17,13 @@
 
 		<do_if value="$subsystemfocus == 'engines' or $subsystemfocus == 'disable'">
 		  <do_if value="this.ship.iscapitalship">
+		  
 			<find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.engine" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" sortbydistanceto="this.ship"/>	  
 						
 			<set_value name="$target" exact="null"/>
 			<do_for_each name="$subsys" in="$locsecondarytargets">
-				<check_line_of_sight object="this.ship" target="$subsys" name="$isinview" />
+				<check_line_of_sight object="this.ship" target="$subsys" name="$isinview" />				
+				
 				<do_if value="$isinview">
 					<set_value name="$target" exact="$subsys"/>
 					<break/>
@@ -35,8 +37,8 @@
 			<set_value name="$target" exact="@$locsecondarytargets.random"/>	
 		  </do_else>
 		  
-		  <debug_text text="'Attacking Engines %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Engines %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Engines %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Engines %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <do_if value="$subsystemfocus == 'engines' or ($subsystemfocus == 'disable' and $target)">
 			<resume label="end_selecttarget"/>
@@ -63,8 +65,8 @@
 			<set_value name="$target" exact="@$locsecondarytargets.random"/>	
 		  </do_else>
 		  
-		  <debug_text text="'Attacking Missiles %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Missiles %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Missiles %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Missiles %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  		  
 		  <do_if value="$subsystemfocus == 'missiles' or ($subsystemfocus == 'disable' and $target)">
 			<resume label="end_selecttarget"/>
@@ -91,8 +93,8 @@
 			<set_value name="$target" exact="@$locsecondarytargets.random"/>  
 		  </do_else>
 		  
-		  <debug_text text="'Attacking M Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking M Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking M Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking M Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <do_if value="$subsystemfocus == 'weps_m' or ($subsystemfocus == 'disable' and $target)">
 			<resume label="end_selecttarget"/>
@@ -119,8 +121,8 @@
 			<set_value name="$target" exact="@$locsecondarytargets.random"/>  	
 		  </do_else>
 		  
-		  <debug_text text="'Attacking L Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking L Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking L Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking L Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <do_if value="$subsystemfocus == 'weps_l' or ($subsystemfocus == 'disable' and $target)">
 			<resume label="end_selecttarget"/>
@@ -147,8 +149,8 @@
 			<set_value name="$target" exact="@$locsecondarytargets.random"/>
 		  </do_else>
 		  
-		  <debug_text text="'Attacking Shields %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Shields %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Shields %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Shields %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <do_if value="$subsystemfocus == 'shields' or ($subsystemfocus == 'disable' and $target)">
 			<resume label="end_selecttarget"/>
@@ -179,8 +181,8 @@
 			<set_value name="$target" exact="@$locsecondarytargets.random"/>  	
 		  </do_else>
 		  
-		  <debug_text text="'Attacking Batteries %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Batteries %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Batteries %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Batteries %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <do_if value="$subsystemfocus == 'batteries' or ($subsystemfocus == 'disable' and $target)">
 			<resume label="end_selecttarget"/>
@@ -198,8 +200,8 @@
 		  
 		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
 		  
-		  <debug_text text="'Attacking Docks %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Docks %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Docks %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Docks %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <resume label="end_selecttarget"/>
 		</do_if>
@@ -211,8 +213,8 @@
 		  
 		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
 		  
-		  <debug_text text="'Attacking Storage %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Storage %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Storage %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Storage %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <resume label="end_selecttarget"/>
 		</do_if>
@@ -224,22 +226,28 @@
 			
 		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
 
-		  <debug_text text="'Attacking Production %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Production %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Production %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Production %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 
 		  
 		  <resume label="end_selecttarget"/>
 		</do_if>
 		
 		<do_if value="$subsystemfocus == 'stationdefense'">
+		  <find_object_component name="$locsecondarytargets" object="$primarytarget" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship"/>
+		
+		  <do_for_each name="$subsys" in="$locsecondarytargets">
+			<debug_text text="'Attacking Def. Plat, subsys readoaut %s: %s, %s, %s attacking %s, %s, %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$subsys.idcode, @$subsys.knownname, $subsys, @$subsys.class, @$subsys.macro]" chance="$debugchance"/>
+		  </do_for_each>
+		
 		  <find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.defencemodule]" checkoperational="false" integrated="false" indestructible="false" invulnerable="false" multiple="true" sortbydistanceto="this.ship">
 			<match state="componentstate.wreck" negate="true"/>
 		  </find_object_component>			
 
 		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
 
-		  <debug_text text="'Attacking Def. Plat %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Def. Plat %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Def. Plat %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Def. Plat %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <resume label="end_selecttarget"/>
 		</do_if>
@@ -251,8 +259,8 @@
 
 		  <set_value name="$target" exact="@$locsecondarytargets.{1}"/>	
 
-		  <debug_text text="'Attacking Shipyard %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugChance"/>
-		  <debug_text text="'Attacking Shipyard %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugChance"/>
+		  <debug_text text="'Attacking Shipyard %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking Shipyard %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
 		  
 		  <resume label="end_selecttarget"/>
 		</do_if>		
