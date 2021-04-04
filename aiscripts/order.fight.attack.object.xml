@@ -9,7 +9,7 @@
   <replace sel="//aiscript/attention[@min='unknown']/actions/label[@name='selecttarget']">
 	<label name="selecttarget"/>
 	
-	<wait exact="[(($debugchance - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
+	<wait exact="[((100 - this.assignedcontrolled.combinedskill) / 400)s, 1ms].max" sinceversion="1" comment="1-2.5 milliseconds. simulate delay associated with target selection and prevents lock-up in case of loop-back."/>
 	
 	<do_if value="$subsystemfocus">
 		<set_value name="$locprimarytarget" exact="@$primarytarget"/>
