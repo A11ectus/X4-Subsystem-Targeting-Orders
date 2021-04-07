@@ -6,7 +6,7 @@
 	        <event_ui_triggered screen="'Lua_Loader'" control="'Ready'" />
 	      </conditions>
 	      <actions>
-	        <raise_lua_event name="'Lua_Loader.Load'" param="'extensions.X4-Subsystem-Targeting-Orders.ui.subsystemtargeting'"/>
+	        <raise_lua_event name="'Lua_Loader.Load'" param="'extensions.al_subsystem_targeting_orders.ui.subsystemtargeting'"/>
 	      </actions>
 	    </cue>
 	    <cue name="OnLuaLoaderReadyCompleted">

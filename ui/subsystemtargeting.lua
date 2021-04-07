@@ -302,23 +302,31 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                         [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false }, 
                         [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false }, 
                         [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false }, 
-                        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false }, 
-                        [8] = { id = "attackengines",   text = "Attack Engines",        icon = "",  displayremoveoption = false }, 
-                        [9] = { id = "attackshields",   text = "Attack Shields",        icon = "",  displayremoveoption = false }, 
-                        [10] = { id = "attackmturrets", text = "Attack M Turrets",      icon = "",  displayremoveoption = false }, 
-                        [11] = { id = "attacklturrets", text = "Attack L Turrets",      icon = "",  displayremoveoption = false }, 
-                        [12] = { id = "attackmissiles", text = "Attack Missle Turrets", icon = "",  displayremoveoption = false }, 
+                        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false } 
                     } 
  
-                    DebugError("FORLEYOR") 
+                    local turretmodesexpanded = { 
+                        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+                        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+                        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+                        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+                        [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+                        [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+                        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+                        [8] = { id = "attackengines",   text = "Attack Engines",        icon = "",  displayremoveoption = false },
+                        [9] = { id = "attackshields",   text = "Attack Shields",        icon = "",  displayremoveoption = false },
+                        [10] = { id = "attackmturrets", text = "Attack M Turrets",      icon = "",  displayremoveoption = false },
+                        [11] = { id = "attacklturrets", text = "Attack L Turrets",      icon = "",  displayremoveoption = false },
+                        [12] = { id = "attackmissiles", text = "Attack Missile Turrets", icon = "",  displayremoveoption = false }
+                    } 
  
                     local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
-                    row[5]:setColSpan(9):createDropDown(turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all") end }) 
+                    row[5]:setColSpan(9):createDropDown(turretmodesexpanded, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all") end }) 
                     row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
                         if newturretmode == "attackengines" or newturretmode == "attackshields" or newturretmode == "attackmturrets" or newturretmode == "attacklturrets" or newturretmode == "attackmissiles" then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
-                        else 
+                        else
                             menu.noupdate = false 
                             C.SetAllTurretModes(inputobject, newturretmode) 
                         end 
