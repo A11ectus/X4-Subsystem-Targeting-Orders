@@ -322,21 +322,27 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
 						[14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false }
 						[15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false }
                     } 
- 
+					
+					local pilotentityid = GetControlEntity(inputobject)
+					
                     local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
                     row[5]:setColSpan(9):createDropDown(turretmodesexpanded, { startOption = function () 
 						local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
-						if startoption == "" then
-							startoption = "targetsubdisable"
+						if GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
+							startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
 						end
 						--DebugError("startoption "..startoption.." end")
 						return startoption
 					end
 					}) 
                     row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
-                        if newturretmode == "attackengines" or newturretmode == "attackshields" or newturretmode == "attackmturrets" or newturretmode == "attacklturrets" or newturretmode == "attackmissiles" then 
+                        if newturretmode == "targetsubengines" or newturretmode == "targetsubshields" or newturretmode == "targetsubmturrets" or newturretmode == "targetsublturrets" or newturretmode == "targetsubmissiles" or newturretmode == "targetsubbatteries" or newturretmode == "targetsubdisable" then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+							SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
+						else if newturretmode == "targetsubclear" then
+							AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+							SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
                         else
                             menu.noupdate = false 
                             C.SetAllTurretModes(inputobject, newturretmode) 
