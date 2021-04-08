@@ -340,7 +340,7 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                         if newturretmode == "targetsubengines" or newturretmode == "targetsubshields" or newturretmode == "targetsubmturrets" or newturretmode == "targetsublturrets" or newturretmode == "targetsubmissiles" or newturretmode == "targetsubbatteries" or newturretmode == "targetsubdisable" then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
 							SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
-						else if newturretmode == "targetsubclear" then
+						elseif newturretmode == "targetsubclear" then
 							AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
 							SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
                         else
