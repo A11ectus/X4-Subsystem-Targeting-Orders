@@ -313,16 +313,27 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                         [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
                         [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
                         [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
-                        [8] = { id = "attackengines",   text = "Attack Engines",        icon = "",  displayremoveoption = false },
-                        [9] = { id = "attackshields",   text = "Attack Shields",        icon = "",  displayremoveoption = false },
-                        [10] = { id = "attackmturrets", text = "Attack M Turrets",      icon = "",  displayremoveoption = false },
-                        [11] = { id = "attacklturrets", text = "Attack L Turrets",      icon = "",  displayremoveoption = false },
-                        [12] = { id = "attackmissiles", text = "Attack Missile Turrets", icon = "",  displayremoveoption = false }
+                        [8] = { id = "targetsubengines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
+                        [9] = { id = "targetsubshields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
+                        [10] = { id = "targetsubmturrets", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
+                        [11] = { id = "targetsublturrets", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
+                        [12] = { id = "targetsubmissiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
+						[13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false }
+						[14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false }
+						[15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false }
                     } 
  
                     local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
-                    row[5]:setColSpan(9):createDropDown(turretmodesexpanded, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all") end }) 
+                    row[5]:setColSpan(9):createDropDown(turretmodesexpanded, { startOption = function () 
+						local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
+						if startoption == "" then
+							startoption = "targetsubdisable"
+						end
+						--DebugError("startoption "..startoption.." end")
+						return startoption
+					end
+					}) 
                     row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
                         if newturretmode == "attackengines" or newturretmode == "attackshields" or newturretmode == "attackmturrets" or newturretmode == "attacklturrets" or newturretmode == "attackmissiles" then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 

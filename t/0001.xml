@@ -35,5 +35,14 @@
 		<t id="3011">Attack the designated station's shipyard/wharf platforms</t>
 		<!-- Params -->		
 		<t id="4000">Target Subsystem Focus. Identifies the subsystem target intended by subsystem targeting orders. Default: null</t>	
+		<!-- Turret Commands -->
+		<t id="5000">Target Engines</t>
+		<t id="5001">Target Shields</t>
+		<t id="5002">Target S/M Turrets</t>
+		<t id="5003">Target L/XL Turrets</t>
+		<t id="5004">Target Missile Turrets</t>
+		<t id="5005">Target Main Batteries</t>
+		<t id="5006">Target All Subsystems</t>		
+		<t id="5007">Clear Subsystem Target</t>
 	</page>
 </language>
