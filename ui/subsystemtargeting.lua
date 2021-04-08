@@ -318,8 +318,8 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                         [10] = { id = "targetsubmturrets", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
                         [11] = { id = "targetsublturrets", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
                         [12] = { id = "targetsubmissiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
-						[13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false }
-						[14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false }
+						[13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
+						[14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
 						[15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false }
                     } 
 					
@@ -336,8 +336,11 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
 						return startoption
 					end
 					}) 
-                    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
-                        if newturretmode == "targetsubengines" or newturretmode == "targetsubshields" or newturretmode == "targetsubmturrets" or newturretmode == "targetsublturrets" or newturretmode == "targetsubmissiles" or newturretmode == "targetsubbatteries" or newturretmode == "targetsubdisable" then 
+                    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)
+
+                        local turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" }
+
+                        if turretmode_t[newturretmode] then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
 							SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
 						elseif newturretmode == "targetsubclear" then
