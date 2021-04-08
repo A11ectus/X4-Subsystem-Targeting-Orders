@@ -329,16 +329,15 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
                     row[5]:setColSpan(9):createDropDown(turretmodesexpanded, { startOption = function () 
 						local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
-						if GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
+						if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
 							startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
 						end
-						--DebugError("startoption "..startoption.." end")
 						return startoption
 					end
 					}) 
-                    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)
+                    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
 
-                        local turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" }
+						local turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" }
 
                         if turretmode_t[newturretmode] then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
