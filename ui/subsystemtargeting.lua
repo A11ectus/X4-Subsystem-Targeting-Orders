@@ -4,9 +4,32 @@ local C = ffi.C
  
 local Lib = require("extensions.sn_mod_support_apis.lua_library") 
 local menu = {} 
+local dock_menu = {}
 local sto_menu = {} 
  
-local config = { 
+local config = {
+    modes = {
+        [1] = { id = "travel",          name = ReadText(1002, 1158),    stoptext = ReadText(1002, 1159),    action = 303 },
+        [2] = { id = "scan",            name = ReadText(1002, 1156),    stoptext = ReadText(1002, 1157),    action = 304 },
+        [3] = { id = "scan_longrange",  name = ReadText(1002, 1155),    stoptext = ReadText(1002, 1160),    action = 305 },
+        [4] = { id = "seta",            name = ReadText(1001, 1132),    stoptext = ReadText(1001, 8606),    action = 225 },
+    },
+    consumables = {
+        { id = "satellite",     type = "civilian",  getnum = C.GetNumAllSatellites,     getdata = C.GetAllSatellites,       callback = C.LaunchSatellite },
+        { id = "navbeacon",     type = "civilian",  getnum = C.GetNumAllNavBeacons,     getdata = C.GetAllNavBeacons,       callback = C.LaunchNavBeacon },
+        { id = "resourceprobe", type = "civilian",  getnum = C.GetNumAllResourceProbes, getdata = C.GetAllResourceProbes,   callback = C.LaunchResourceProbe },
+        { id = "lasertower",    type = "military",  getnum = C.GetNumAllLaserTowers,    getdata = C.GetAllLaserTowers,      callback = C.LaunchLaserTower },
+        { id = "mine",          type = "military",  getnum = C.GetNumAllMines,          getdata = C.GetAllMines,            callback = C.LaunchMine },
+    },
+    inactiveButtonProperties = { bgColor = Helper.defaultUnselectableButtonBackgroundColor, highlightColor = Helper.defaultUnselectableButtonHighlightColor },
+    activeButtonTextProperties = { halign = "center" },
+    inactiveButtonTextProperties = { halign = "center", color = Helper.color.grey },
+    dronetypes = {
+        { id = "orecollector",  name = ReadText(20214, 500) },
+        { id = "gascollector",  name = ReadText(20214, 400) },
+        { id = "defence",       name = ReadText(20214, 300) },
+        { id = "transport",     name = ReadText(20214, 900) },
+    },
     mapRowHeight = Helper.standardTextHeight, 
     mapFontSize = Helper.standardFontSize, 
     infoFrameLayer2 = 5, 
@@ -17,7 +40,10 @@ local function init()
     DebugError("Subsystem Targeting Orders Init") 
  
     menu = Lib.Get_Egosoft_Menu("MapMenu") 
-    menu.setupLoadoutInfoSubmenuRows = sto_menu.setupLoadoutInfoSubmenuRows 
+    menu.setupLoadoutInfoSubmenuRows = sto_menu.setupLoadoutInfoSubmenuRows
+
+    dock_menu = Lib.Get_Egosoft_Menu("DockedMenu")
+    dock_menu.display = sto_menu.display
 end 
  
 function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, instance) 
@@ -893,5 +919,715 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
         row[2]:setColSpan(12):createText(ReadText(1001, 6526)) 
     end 
 end 
- 
+
+function sto_menu.display()
+    Helper.removeAllWidgetScripts(dock_menu)
+
+    local width = Helper.viewWidth
+    local height = Helper.viewHeight
+    local xoffset = 0
+    local yoffset = 0
+
+    dock_menu.frame = Helper.createFrameHandle(dock_menu, { width = width, x = xoffset, y = yoffset, backgroundID = "solid", backgroundColor = Helper.color.semitransparent, standardButtons = ((dock_menu.mode == "docked") and (dock_menu.currentplayership ~= 0)) and {} or { close = true, back = true } })
+
+    dock_menu.createTopLevel(dock_menu.frame)
+
+    local table_topleft, table_header, table_button, row
+
+    local isdocked = (dock_menu.currentplayership ~= 0) and GetComponentData(dock_menu.currentplayership, "isdocked")
+    local ownericon, owner, shiptrader, isdock, canbuildships, isplayerowned, issupplyship, canhavetradeoffers = GetComponentData(dock_menu.currentcontainer, "ownericon", "owner", "shiptrader", "isdock", "canbuildships", "isplayerowned", "issupplyship", "canhavetradeoffers")
+    local cantrade = canhavetradeoffers and isdock
+    local canwareexchange = cantrade and isplayerowned
+    --NB: equipment docks currently do not have ship traders
+    local dockedplayerships = {}
+    Helper.ffiVLA(dockedplayerships, "UniverseID", C.GetNumDockedShips, C.GetDockedShips, dock_menu.currentcontainer, "player")
+    local canequip = false
+    local cansupply = false
+    for _, ship in ipairs(dockedplayerships) do
+        if C.CanContainerEquipShip(dock_menu.currentcontainer, ship) then
+            canequip = true
+        end
+        if isplayerowned and C.CanContainerSupplyShip(dock_menu.currentcontainer, ship) then
+            cansupply = true
+        end
+    end
+    local canmodifyship = (shiptrader ~= nil) and (canequip or cansupply) and isdock
+    local canbuyship = (shiptrader ~= nil) and canbuildships and isdock
+    --print("cantrade: " .. tostring(cantrade) .. ", canbuyship: " .. tostring(canbuyship) .. ", canmodifyship: " .. tostring(canmodifyship))
+
+    width = (width / 3) - Helper.borderSize
+
+    -- set up a new table
+    table_topleft = dock_menu.frame:addTable(1, { tabOrder = 0, width = Helper.playerInfoConfig.width, height = Helper.playerInfoConfig.height, x = Helper.playerInfoConfig.offsetX, y = Helper.playerInfoConfig.offsetY, scaling = false })
+
+    row = table_topleft:addRow(false, { fixed = true, bgColor = Helper.color.transparent60 })
+    local icon = row[1]:createIcon(function () local logo = C.GetCurrentPlayerLogo(); return ffi.string(logo.icon) end, { width = Helper.playerInfoConfig.height, height = Helper.playerInfoConfig.height, color = Helper.getPlayerLogoColor })
+
+    local fontsize = Helper.scaleFont(Helper.standardFont, Helper.standardFontSize)
+    local textheight = math.ceil(C.GetTextHeight(Helper.playerInfoConfigTextLeft(), Helper.standardFont, Helper.playerInfoConfig.fontsize, Helper.playerInfoConfig.width - Helper.playerInfoConfig.height - Helper.borderSize))
+    icon:setText(Helper.playerInfoConfigTextLeft,   { fontsize = Helper.playerInfoConfig.fontsize, halign = "left",  x = Helper.playerInfoConfig.height + Helper.borderSize, y = (Helper.playerInfoConfig.height - textheight) / 2 })
+    icon:setText2(Helper.playerInfoConfigTextRight, { fontsize = Helper.playerInfoConfig.fontsize, halign = "right", x = Helper.borderSize,          y = (Helper.playerInfoConfig.height - textheight) / 2 })
+
+    local xoffset = (Helper.viewWidth - width) / 2
+    local yoffset = 25
+
+    table_header = dock_menu.frame:addTable(11, { tabOrder = 1, width = width, x = xoffset, y = dock_menu.topLevelOffsetY + Helper.borderSize + yoffset, highlightMode = "off" })
+    table_header:setColWidth(1, math.floor((width - 2 * Helper.borderSize) / 3), false)
+    table_header:setColWidth(3, Helper.standardTextHeight)
+    table_header:setColWidth(4, Helper.standardTextHeight)
+    table_header:setColWidth(5, Helper.standardTextHeight)
+    table_header:setColWidth(6, Helper.standardTextHeight)
+    table_header:setColWidth(8, Helper.standardTextHeight)
+    table_header:setColWidth(9, Helper.standardTextHeight)
+    table_header:setColWidth(10, Helper.standardTextHeight)
+    table_header:setColWidth(11, Helper.standardTextHeight)
+    table_header:setDefaultColSpan(1, 1)
+    table_header:setDefaultColSpan(2, 5)
+    table_header:setDefaultColSpan(7, 5)
+    table_header:setDefaultBackgroundColSpan(1, 11)
+
+    local row = table_header:addRow(false, { fixed = true, bgColor = Helper.color.transparent })
+    local color = Helper.color.white
+    if isplayerowned then
+        if dock_menu.currentcontainer == C.GetPlayerObjectID() then
+            color = Helper.color.playergreen
+        else
+            color = Helper.color.green
+        end
+    end
+    row[1]:setColSpan(11):createText(dock_menu.currentcontainer and ffi.string(C.GetComponentName(dock_menu.currentcontainer)) or "", Helper.headerRowCenteredProperties)
+    row[1].properties.color = color
+
+    height = Helper.scaleY(Helper.standardTextHeight)
+
+    local row = table_header:addRow(false, { fixed = true, bgColor = Helper.color.unselectable })
+    if dock_menu.mode == "cockpit" then
+        row[2]:createText(ffi.string(C.GetObjectIDCode(dock_menu.currentcontainer)), { halign = "center", color = color })
+    else
+        row[1]:createIcon(ownericon, { width = height, height = height, x = row[1]:getWidth() - height, scaling = false })
+        row[2]:createText(function() return GetComponentData(dock_menu.currentcontainer, "ownername") end, { halign = "center" })
+        row[7]:createText(function() return "[" .. GetUIRelation(GetComponentData(dock_menu.currentcontainer, "owner")) .. "]" end, { halign = "left" })
+    end
+
+    table_header:addEmptyRow(yoffset)
+
+    if dock_menu.mode == "cockpit" then
+        local row = table_header:addRow("buttonRow1", { bgColor = Helper.color.transparent, fixed = true })
+        row[1]:createButton(config.inactiveButtonProperties):setText("", config.inactiveButtonTextProperties)   -- dummy
+        local active = (dock_menu.currentplayership ~= 0) and C.CanPlayerStandUp()
+        row[2]:createButton(active and { mouseOverText = GetLocalizedKeyName("action", 277), helpOverlayID = "docked_getup", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1002, 20014), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)   -- "Get Up"
+        if active then
+            row[2].handlers.onClick = dock_menu.buttonGetUp
+        end
+        row[7]:createButton({ mouseOverText = GetLocalizedKeyName("action", 316), helpOverlayID = "docked_shipinformation", helpOverlayText = " ", helpOverlayHighlightOnly = true }):setText(ReadText(1001, 8602), { halign = "center" })  -- "Ship Information"
+        row[7].handlers.onClick = dock_menu.buttonShipInfo
+
+        local row = table_header:addRow("buttonRow3", { bgColor = Helper.color.transparent, fixed = true })
+        local currentactivity = GetPlayerActivity()
+        if currentactivity ~= "none" then
+            local text = ""
+            for _, entry in ipairs(config.modes) do
+                if entry.id == currentactivity then
+                    text = entry.stoptext
+                    break
+                end
+            end
+            local active = dock_menu.currentplayership ~= 0
+            row[2]:createButton(active and {helpOverlayID = "docked_stopmode", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(text, active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)  -- "Stop Mode"
+            if active then
+                row[2].handlers.onClick = dock_menu.buttonStopMode
+                row[2].properties.uiTriggerID = "stopmode"
+            end
+        else
+            local active = dock_menu.currentplayership ~= 0
+            local modes = {}
+            if active then
+                for _, entry in ipairs(config.modes) do
+                    local active = true
+                    local visible = true
+                    if entry.id == "travel" then
+                        active = (dock_menu.currentplayership ~= 0) and C.CanStartTravelMode(dock_menu.currentplayership)
+                    elseif entry.id == "seta" then
+                        visible = C.CanActivateSeta(false)
+                    end
+                    local mouseovertext = GetLocalizedKeyName("action", entry.action)
+                    if visible then
+                        table.insert(modes, { id = entry.id, text = entry.name, icon = "", displayremoveoption = false, active = active, mouseovertext = mouseovertext })
+                    end
+                end
+            end
+            row[2]:createDropDown(modes, {
+                helpOverlayID = "docked_modes",     
+                helpOverlayText = " ", 
+                helpOverlayHighlightOnly = true, 
+                height = Helper.standardButtonHeight,
+                startOption = "",
+                textOverride = ReadText(1002, 1001),
+                bgColor = active and Helper.defaultButtonBackgroundColor or Helper.defaultUnselectableButtonBackgroundColor,
+                highlightColor = active and Helper.defaultButtonHighlightColor or Helper.defaultUnselectableButtonHighlightColor
+            }):setTextProperties(active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)   -- Modes
+            if active then
+                row[2].handlers.onDropDownConfirmed = dock_menu.dropdownMode
+                row[2].properties.uiTriggerID = "startmode"
+            end
+        end
+        local civilian, military, isinhighway = {}, {}, false
+        if dock_menu.currentplayership ~= 0 then
+            for _, consumabledata in ipairs(config.consumables) do
+                local numconsumable = consumabledata.getnum(dock_menu.currentplayership)
+                if numconsumable > 0 then
+                    local consumables = ffi.new("AmmoData[?]", numconsumable)
+                    numconsumable = consumabledata.getdata(consumables, numconsumable, dock_menu.currentplayership)
+                    for j = 0, numconsumable - 1 do
+                        if consumables[j].amount > 0 then
+                            local macro = ffi.string(consumables[j].macro)
+                            if consumabledata.type == "civilian" then
+                                table.insert(civilian, { id = consumabledata.id .. ":" .. macro, text = GetMacroData(macro, "name"), text2 = "(" .. consumables[j].amount .. ")", icon = "", displayremoveoption = false })
+                            else
+                                table.insert(military, { id = consumabledata.id .. ":" .. macro, text = GetMacroData(macro, "name"), text2 = "(" .. consumables[j].amount .. ")", icon = "", displayremoveoption = false })
+                            end
+                        end
+                    end
+                end
+            end
+            isinhighway = C.GetContextByClass(dock_menu.currentplayership, "highway", false) ~= 0
+        end
+        local active = (#civilian > 0) and (not isinhighway)
+        local mouseovertext = ""
+        if #civilian == 0 then
+            mouseovertext = ReadText(1026, 7818)
+        elseif isinhighway then
+            mouseovertext = ReadText(1026, 7845)
+        end
+        row[1]:createDropDown(civilian, {
+            helpOverlayID = "docked_deploy_civ",
+            helpOverlayText = " ",
+            helpOverlayHighlightOnly = true,
+            height = Helper.standardButtonHeight,
+            startOption = "",
+            textOverride = ReadText(1001, 8607),
+            text2Override = " ",
+            bgColor = active and Helper.defaultButtonBackgroundColor or Helper.defaultUnselectableButtonBackgroundColor,
+            highlightColor = active and Helper.defaultButtonHighlightColor or Helper.defaultUnselectableButtonHighlightColor,
+            mouseOverText = mouseovertext,
+        }):setTextProperties(active and config.activeButtonTextProperties or config.inactiveButtonTextProperties):setText2Properties(active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)   -- Deploy Civilian
+        row[1].properties.text2.halign = "right"
+        row[1].properties.text2.x = Helper.standardTextOffsetx
+        if active then
+            row[1].handlers.onDropDownConfirmed = dock_menu.dropdownDeploy
+        end
+        local active = (#military > 0) and (not isinhighway)
+        local mouseovertext = ""
+        if #military == 0 then
+            mouseovertext = ReadText(1026, 7819)
+        elseif isinhighway then
+            mouseovertext = ReadText(1026, 7845)
+        end
+        row[7]:createDropDown(military, {
+            helpOverlayID = "docked_deploy_mil",
+            helpOverlayText = " ",
+            helpOverlayHighlightOnly = true,
+            height = Helper.standardButtonHeight,
+            startOption = "",
+            textOverride = ReadText(1001, 8608),
+            text2Override = " ",
+            bgColor = active and Helper.defaultButtonBackgroundColor or Helper.defaultUnselectableButtonBackgroundColor,
+            highlightColor = active and Helper.defaultButtonHighlightColor or Helper.defaultUnselectableButtonHighlightColor,
+            mouseOverText = mouseovertext,
+        }):setTextProperties(active and config.activeButtonTextProperties or config.inactiveButtonTextProperties):setText2Properties(active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)   -- Deploy Military
+        row[7].properties.text2.halign = "right"
+        row[7].properties.text2.x = Helper.standardTextOffsetx
+        if active then
+            row[7].handlers.onDropDownConfirmed = dock_menu.dropdownDeploy
+        end
+
+        local row = table_header:addRow("buttonRow2", { bgColor = Helper.color.transparent, fixed = true })
+        local active = (dock_menu.currentplayership ~= 0) and C.HasShipFlightAssist(dock_menu.currentplayership)
+        row[1]:createButton(active and { mouseOverText = GetLocalizedKeyName("action", 221), helpOverlayID = "docked_flightassist", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1001, 8604), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties) -- "Flight Assist"
+        if active then
+            row[1].handlers.onClick = dock_menu.buttonFlightAssist
+        end
+        row[2]:createButton({ bgColor = dock_menu.dockButtonBGColor, highlightColor = dock_menu.dockButtonHighlightColor, helpOverlayID = "docked_dock", helpOverlayText = " ", helpOverlayHighlightOnly = true }):setText(ReadText(1001, 8605), { halign = "center", color = dock_menu.dockButtonTextColor }) -- "Dock"
+        row[2].properties.mouseOverText = GetLocalizedKeyName("action", 175)
+        row[2].handlers.onClick = dock_menu.buttonDock
+        local active = (dock_menu.currentplayership ~= 0) and C.ToggleAutoPilot(true)
+        row[7]:createButton(active and { mouseOverText = GetLocalizedKeyName("action", 179), helpOverlayID = "docked_autopilot", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1001, 8603), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)    -- "Autopilot"
+        if active then
+            row[7].handlers.onClick = dock_menu.buttonAutoPilot
+        end
+
+        if dock_menu.currentplayership ~= 0 then
+            local weapons = {}
+            local numslots = tonumber(C.GetNumUpgradeSlots(dock_menu.currentplayership, "", "weapon"))
+            for j = 1, numslots do
+                local current = C.GetUpgradeSlotCurrentComponent(dock_menu.currentplayership, "weapon", j)
+                if current ~= 0 then
+                    table.insert(weapons, current)
+                end
+            end
+            local pilot = GetComponentData(dock_menu.currentplayership, "assignedpilot")
+            dock_menu.currentammo = {}
+            if #weapons > 0 then
+                table_header:addEmptyRow(yoffset)
+
+                local titlerow = table_header:addRow(false, { bgColor = Helper.color.transparent })
+                titlerow[1]:setColSpan(11):createText(ReadText(1001, 9409), Helper.headerRowCenteredProperties)
+                titlerow[1].properties.helpOverlayID = "docked_weaponconfig"
+                titlerow[1].properties.helpOverlayText = " "
+                titlerow[1].properties.helpOverlayHeight = titlerow:getHeight()
+                titlerow[1].properties.helpOverlayHighlightOnly = true
+                titlerow[1].properties.helpOverlayScaling = false
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.unselectable })
+                row[2]:createText(ReadText(1001, 9410), { font = Helper.standardFontBold, halign = "center" })
+                row[7]:createText(ReadText(1001, 9411), { font = Helper.standardFontBold, halign = "center" })
+                titlerow[1].properties.helpOverlayHeight = titlerow[1].properties.helpOverlayHeight + row:getHeight() + Helper.borderSize
+
+                -- active weapon groups
+                local row = table_header:addRow("weaponconfig_active", { bgColor = Helper.color.transparent })
+                row[1]:setColSpan(2):createText(ReadText(1001, 11218))
+                row[7]:setColSpan(1)
+                for j = 1, 4 do
+                    row[2 + j]:createCheckBox(function () return C.GetDefensibleActiveWeaponGroup(dock_menu.currentplayership, true) == j end, { width = Helper.standardTextHeight, height = Helper.standardTextHeight, symbol = "arrow", bgColor = function () return dock_menu.checkboxWeaponGroupColor(j, true) end })
+                    row[2 + j].handlers.onClick = function () C.SetDefensibleActiveWeaponGroup(dock_menu.currentplayership, true, j) end
+                end
+                for j = 1, 4 do
+                    row[7 + j]:createCheckBox(function () return C.GetDefensibleActiveWeaponGroup(dock_menu.currentplayership, false) == j end, { width = Helper.standardTextHeight, height = Helper.standardTextHeight, symbol = "arrow", bgColor = function () return dock_menu.checkboxWeaponGroupColor(j, false) end })
+                    row[7 + j].handlers.onClick = function () C.SetDefensibleActiveWeaponGroup(dock_menu.currentplayership, false, j) end
+                end
+                table_header:addEmptyRow(Helper.standardTextHeight / 2)
+
+                for _, weapon in ipairs(weapons) do
+                    local numweapongroups = C.GetNumWeaponGroupsByWeapon(dock_menu.currentplayership, weapon)
+                    local rawweapongroups = ffi.new("UIWeaponGroup[?]", numweapongroups)
+                    numweapongroups = C.GetWeaponGroupsByWeapon(rawweapongroups, numweapongroups, dock_menu.currentplayership, weapon)
+                    local uiweapongroups = { primary = {}, secondary = {} }
+                    for j = 0, numweapongroups-1 do
+                        if rawweapongroups[j].primary then
+                            uiweapongroups.primary[rawweapongroups[j].idx] = true
+                        else
+                            uiweapongroups.secondary[rawweapongroups[j].idx] = true
+                        end
+                    end
+
+                    local row = table_header:addRow("weaponconfig", { bgColor = Helper.color.transparent })
+                    row[1]:setColSpan(2):createText(ffi.string(C.GetComponentName(weapon)))
+                    row[7]:setColSpan(1)
+                    for j = 1, 4 do
+                        row[2 + j]:createCheckBox(uiweapongroups.primary[j], { width = Helper.standardTextHeight, height = Helper.standardTextHeight, bgColor = function () return dock_menu.checkboxWeaponGroupColor(j, true) end })
+                        row[2 + j].handlers.onClick = function() dock_menu.checkboxWeaponGroup(dock_menu.currentplayership, weapon, true, j, not uiweapongroups.primary[j]) end
+                    end
+                    for j = 1, 4 do
+                        row[7 + j]:createCheckBox(uiweapongroups.secondary[j], { width = Helper.standardTextHeight, height = Helper.standardTextHeight, bgColor = function () return dock_menu.checkboxWeaponGroupColor(j, false) end })
+                        row[7 + j].handlers.onClick = function() dock_menu.checkboxWeaponGroup(dock_menu.currentplayership, weapon, false, j, not uiweapongroups.secondary[j]) end
+                    end
+                    titlerow[1].properties.helpOverlayHeight = titlerow[1].properties.helpOverlayHeight + row:getHeight() + Helper.borderSize
+
+                    if C.IsComponentClass(weapon, "missilelauncher") then
+                        local nummissiletypes = C.GetNumAllMissiles(dock_menu.currentplayership)
+                        local missilestoragetable = ffi.new("AmmoData[?]", nummissiletypes)
+                        nummissiletypes = C.GetAllMissiles(missilestoragetable, nummissiletypes, dock_menu.currentplayership)
+
+                        local weaponmacro = GetComponentData(ConvertStringTo64Bit(tostring(weapon)), "macro")
+                        local dropdowndata = {}
+                        for j = 0, nummissiletypes-1 do
+                            local ammomacro = ffi.string(missilestoragetable[j].macro)
+                            if C.IsAmmoMacroCompatible(weaponmacro, ammomacro) then
+                                table.insert(dropdowndata, {id = ammomacro, text = GetMacroData(ammomacro, "name"), icon = "", displayremoveoption = false})
+                            end
+                        end
+
+                        -- if the ship has no compatible ammunition in ammo storage, have the dropdown print "Out of ammo" and make it inactive.
+                        dock_menu.currentammo[tostring(weapon)] = "empty"
+                        local dropdownactive = true
+                        if #dropdowndata == 0 then
+                            dropdownactive = false
+                            table.insert(dropdowndata, {id = "empty", text = ReadText(1001, 9412), icon = "", displayremoveoption = false}) -- Out of ammo
+                        else
+                            -- NB: currentammomacro can be null
+                            dock_menu.currentammo[tostring(weapon)] = ffi.string(C.GetCurrentAmmoOfWeapon(weapon))
+                        end
+
+                        local row = table_header:addRow("ammo_config", { bgColor = Helper.color.transparent })
+                        row[1]:createText("    " .. ReadText(1001, 2800) .. ReadText(1001, 120))    -- Ammunition, :
+                        row[2]:setColSpan(10):createDropDown(dropdowndata, { startOption = function () return dock_menu.getDropDownOption(weapon) end, active = dropdownactive })
+                        row[2].handlers.onDropDownConfirmed = function(_, newammomacro) C.SetAmmoOfWeapon(weapon, newammomacro) end
+                        titlerow[1].properties.helpOverlayHeight = titlerow[1].properties.helpOverlayHeight + row:getHeight() + Helper.borderSize
+                    elseif pilot and C.IsComponentClass(weapon, "bomblauncher") then
+                        local pilot64 = ConvertIDTo64Bit(pilot)
+                        local numbombtypes = C.GetNumAllInventoryBombs(pilot64)
+                        local bombstoragetable = ffi.new("AmmoData[?]", numbombtypes)
+                        numbombtypes = C.GetAllInventoryBombs(bombstoragetable, numbombtypes, pilot64)
+
+                        local weaponmacro = GetComponentData(ConvertStringTo64Bit(tostring(weapon)), "macro")
+                        local dropdowndata = {}
+                        for j = 0, numbombtypes-1 do
+                            local ammomacro = ffi.string(bombstoragetable[j].macro)
+                            if C.IsAmmoMacroCompatible(weaponmacro, ammomacro) then
+                                table.insert(dropdowndata, { id = ammomacro, text = GetMacroData(ammomacro, "name"), icon = "", displayremoveoption = false })
+                            end
+                        end
+
+                        -- if the ship has no compatible ammunition in ammo storage, have the dropdown print "Out of ammo" and make it inactive.
+                        dock_menu.currentammo[tostring(weapon)] = "empty"
+                        local dropdownactive = true
+                        if #dropdowndata == 0 then
+                            dropdownactive = false
+                            table.insert(dropdowndata, { id = "empty", text = ReadText(1001, 9412), icon = "", displayremoveoption = false })   -- Out of ammo
+                        else
+                            -- NB: currentammomacro can be null
+                            dock_menu.currentammo[tostring(weapon)] = ffi.string(C.GetCurrentAmmoOfWeapon(weapon))
+                        end
+
+                        local row = table_header:addRow("ammo_config", { bgColor = Helper.color.transparent })
+                        row[1]:createText("    " .. ReadText(1001, 2800) .. ReadText(1001, 120))    -- Ammunition, :
+                        row[2]:setColSpan(10):createDropDown(dropdowndata, { startOption = function () return dock_menu.getDropDownOption(weapon) end, active = dropdownactive })
+                        row[2].handlers.onDropDownConfirmed = function(_, newammomacro) C.SetAmmoOfWeapon(weapon, newammomacro) end
+                        titlerow[1].properties.helpOverlayHeight = titlerow[1].properties.helpOverlayHeight + row:getHeight() + Helper.borderSize
+                    end
+                end
+            end
+
+            dock_menu.turrets = {}
+            local numslots = tonumber(C.GetNumUpgradeSlots(dock_menu.currentplayership, "", "turret"))
+            for j = 1, numslots do
+                local groupinfo = C.GetUpgradeSlotGroup(dock_menu.currentplayership, "", "turret", j)
+                if (ffi.string(groupinfo.path) == "..") and (ffi.string(groupinfo.group) == "") then
+                    local current = C.GetUpgradeSlotCurrentComponent(dock_menu.currentplayership, "turret", j)
+                    if current ~= 0 then
+                        table.insert(dock_menu.turrets, current)
+                    end
+                end
+            end
+
+            dock_menu.turretgroups = {}
+            local n = C.GetNumUpgradeGroups(dock_menu.currentplayership, "")
+            local buf = ffi.new("UpgradeGroup2[?]", n)
+            n = C.GetUpgradeGroups2(buf, n, dock_menu.currentplayership, "")
+            for i = 0, n - 1 do
+                if (ffi.string(buf[i].path) ~= "..") or (ffi.string(buf[i].group) ~= "") then
+                    local group = { context = buf[i].contextid, path = ffi.string(buf[i].path), group = ffi.string(buf[i].group) }
+                    local groupinfo = C.GetUpgradeGroupInfo2(dock_menu.currentplayership, "", group.context, group.path, group.group, "turret")
+                    if (groupinfo.count > 0) then
+                        group.operational = groupinfo.operational
+                        group.currentmacro = ffi.string(groupinfo.currentmacro)
+                        group.slotsize = ffi.string(groupinfo.slotsize)
+                        table.insert(dock_menu.turretgroups, group)
+                    end
+                end
+            end
+
+            if (#dock_menu.turrets > 0) or (#dock_menu.turretgroups > 0) then
+                table_header:addEmptyRow(yoffset)
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.transparent })
+                row[1]:setColSpan(11):createText(ReadText(1001, 8612), Helper.headerRowCenteredProperties)
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.unselectable })
+                row[2]:createText(ReadText(1001, 8620), { font = Helper.standardFontBold, halign = "center" })
+                row[7]:createText(ReadText(1001, 12),   { font = Helper.standardFontBold, halign = "center" })
+
+                local turretmodes = {
+                    [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+                    [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+                    [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+                    [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+                    [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+                    [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+                    [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+                }
+
+                local turretmodesexpanded = { 
+                    [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+                    [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+                    [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+                    [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+                    [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+                    [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+                    [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+                    [8] = { id = "targetsubengines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
+                    [9] = { id = "targetsubshields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
+                    [10] = { id = "targetsubmturrets", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
+                    [11] = { id = "targetsublturrets", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
+                    [12] = { id = "targetsubmissiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
+                    [13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
+                    [14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
+                    [15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false }
+                } 
+                    
+                local pilotentityid = GetControlEntity(dock_menu.currentplayership)
+
+                local row = table_header:addRow("turret_config", { bgColor = Helper.color.transparent })
+                row[1]:createText(ReadText(1001, 2963))
+                row[2]:setColSpan(5):createDropDown(turretmodesexpanded, { startOption = function () 
+                        local startoption = menu.getDropDownTurretModeOption(inputobject, "all")
+                        if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
+                            startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
+                        end
+                        return startoption
+                    end, helpOverlayID = "docked_turretconfig_modes", helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+                row[2].handlers.onDropDownConfirmed = function(_, newturretmode)
+
+                    local turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" }
+
+                    if turretmode_t[newturretmode] then 
+                        AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+                        SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
+                    elseif newturretmode == "targetsubclear" then
+                        AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+                        SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
+                    else
+                        menu.noupdate = false 
+                        C.SetAllTurretModes(dock_menu.currentplayership, newturretmode) 
+                    end 
+                end
+                row[7]:setColSpan(5):createButton({ helpOverlayID = "docked_turretconfig_arm", helpOverlayText = " ", helpOverlayHighlightOnly = true  }):setText(function () return dock_menu.areTurretsArmed(dock_menu.currentplayership) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" })
+                row[7].handlers.onClick = function () return C.SetAllTurretsArmed(dock_menu.currentplayership, not dock_menu.areTurretsArmed(dock_menu.currentplayership)) end
+
+                local turretscounter = 0
+                for i, turret in ipairs(dock_menu.turrets) do
+                    local row = table_header:addRow("turret_config", { bgColor = Helper.color.transparent })
+                    turretscounter = turretscounter + 1
+                    local turretname = ffi.string(C.GetComponentName(turret))
+                    local mouseovertext = ""
+                    local textwidth = C.GetTextWidth(turretname, Helper.standardFont, Helper.scaleFont(Helper.standardFont, Helper.standardFontSize)) + Helper.scaleX(Helper.standardTextOffsetx)
+                    if (textwidth > row[1]:getWidth()) then
+                        mouseovertext = turretname
+                    end
+                    row[1]:createText(turretname, { mouseOverText = mouseovertext })
+                    row[2]:setColSpan(5):createDropDown(turretmodes, { startOption = function () return dock_menu.getDropDownTurretModeOption(turret) end, helpOverlayID = "docked_turrets_modes".. turretscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+                    row[2].handlers.onDropDownConfirmed = function(_, newturretmode) C.SetWeaponMode(turret, newturretmode) end
+                    row[7]:setColSpan(5):createButton({helpOverlayID = "docked_turrets_arm" .. turretscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true   }):setText(function () return C.IsWeaponArmed(turret) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" })
+                    row[7].handlers.onClick = function () return C.SetWeaponArmed(turret, not C.IsWeaponArmed(turret)) end
+                end
+
+                local turretgroupscounter = 0
+                for i, group in ipairs(dock_menu.turretgroups) do
+                    local row = table_header:addRow("turret_config", { bgColor = Helper.color.transparent })
+                    turretgroupscounter = turretgroupscounter + 1
+                    local groupname = ReadText(1001, 8023) .. " " .. i .. ((group.currentmacro ~= "") and (" (" .. dock_menu.getSlotSizeText(group.slotsize) .. " " .. GetMacroData(group.currentmacro, "shortname") .. ")") or "")
+                    local mouseovertext = ""
+                    local textwidth = C.GetTextWidth(groupname, Helper.standardFont, Helper.scaleFont(Helper.standardFont, Helper.standardFontSize)) + Helper.scaleX(Helper.standardTextOffsetx)
+                    if (textwidth > row[1]:getWidth()) then
+                        mouseovertext = groupname
+                    end
+                    row[1]:createText(groupname, { color = (group.operational > 0) and Helper.color.white or Helper.color.red, mouseOverText = mouseovertext })
+                    row[2]:setColSpan(5):createDropDown(turretmodes, { startOption = function () return dock_menu.getDropDownTurretModeOption(dock_menu.currentplayership, group.context, group.path, group.group) end, active = group.operational > 0, helpOverlayID = "docked_turretgroups_modes".. turretgroupscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+                    row[2].handlers.onDropDownConfirmed = function(_, newturretmode) C.SetTurretGroupMode2(dock_menu.currentplayership, group.context, group.path, group.group, newturretmode) end
+                    row[7]:setColSpan(5):createButton({ helpOverlayID = "docked_turretgroups_arm" .. turretgroupscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  }):setText(function () return C.IsTurretGroupArmed(dock_menu.currentplayership, group.context, group.path, group.group) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" })
+                    row[7].handlers.onClick = function () return C.SetTurretGroupArmed(dock_menu.currentplayership, group.context, group.path, group.group, not C.IsTurretGroupArmed(dock_menu.currentplayership, group.context, group.path, group.group)) end
+                end
+            end
+
+            dock_menu.drones = {}
+            for _, dronetype in ipairs(config.dronetypes) do
+                if C.GetNumStoredUnits(dock_menu.currentplayership, dronetype.id, false) > 0 then
+                    local entry = {
+                        type = dronetype.id,
+                        name = dronetype.name,
+                        current = ffi.string(C.GetCurrentDroneMode(dock_menu.currentplayership, dronetype.id)),
+                        modes = {},
+                    }
+                    local n = C.GetNumDroneModes(dock_menu.currentplayership, dronetype.id)
+                    local buf = ffi.new("DroneModeInfo[?]", n)
+                    n = C.GetDroneModes(buf, n, dock_menu.currentplayership, dronetype.id)
+                    for i = 0, n - 1 do
+                        local id = ffi.string(buf[i].id)
+                        if (id ~= "trade") or (id == entry.current) then
+                            table.insert(entry.modes, { id = id, text = ffi.string(buf[i].name), icon = "", displayremoveoption = false })
+                        end
+                    end
+                    table.insert(dock_menu.drones, entry)
+                end
+            end
+
+            if #dock_menu.drones > 0 then
+                table_header:addEmptyRow(yoffset)
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.transparent })
+                row[1]:setColSpan(11):createText(ReadText(1001, 8619), Helper.headerRowCenteredProperties)
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.unselectable })
+                row[2]:createText(ReadText(1001, 8620), { font = Helper.standardFontBold, halign = "center" })
+                row[7]:createText(ReadText(1001, 12), { font = Helper.standardFontBold, halign = "center" })
+
+                for _, entry in ipairs(dock_menu.drones) do
+                    local isblocked = C.IsDroneTypeBlocked(dock_menu.currentplayership, entry.type)
+                    local row = table_header:addRow("drone_config", { bgColor = Helper.color.transparent })
+                    row[1]:createText(function () return entry.name .. " (" .. (C.IsDroneTypeArmed(dock_menu.currentplayership, entry.type) and (C.GetNumUnavailableUnits(dock_menu.currentplayership, entry.type) .. "/") or "") .. C.GetNumStoredUnits(dock_menu.currentplayership, entry.type, false) ..")" end, { color = isblocked and Helper.color.warningorange or nil })
+                    row[2]:setColSpan(5):createDropDown(entry.modes, { startOption = function () return ffi.string(C.GetCurrentDroneMode(dock_menu.currentplayership, entry.type)) end, active = not isblocked })
+                    row[2].handlers.onDropDownConfirmed = function (_, newdronemode) C.SetDroneMode(dock_menu.currentplayership, entry.type, newdronemode) end
+                    row[7]:setColSpan(5):createButton({ active = not isblocked }):setText(function () return C.IsDroneTypeArmed(dock_menu.currentplayership, entry.type) and ReadText(1001, 8622) or ReadText(1001, 8623) end, { halign = "center" })
+                    row[7].handlers.onClick = function () return C.SetDroneTypeArmed(dock_menu.currentplayership, entry.type, not C.IsDroneTypeArmed(dock_menu.currentplayership, entry.type)) end
+                    row[7].properties.helpOverlayID = "docked_drones_" .. entry.type
+                    row[7].properties.helpOverlayText = " "
+                    row[7].properties.helpOverlayHighlightOnly = true 
+                end
+            end
+            -- subordinates
+            local subordinates = GetSubordinates(dock_menu.currentplayership)
+            local groups = {}
+            local usedassignments = {}
+            for _, subordinate in ipairs(subordinates) do
+                local purpose, shiptype = GetComponentData(subordinate, "primarypurpose", "shiptype")
+                local group = GetComponentData(subordinate, "subordinategroup")
+                if group and group > 0 then
+                    if groups[group] then
+                        table.insert(groups[group].subordinates, subordinate)
+                        if shiptype == "resupplier" then
+                            groups[group].numassignableresupplyships = groups[group].numassignableresupplyships + 1
+                        end
+                        if purpose == "mine" then
+                            groups[group].numassignableminingships = groups[group].numassignableminingships + 1
+                        end
+                    else
+                        local assignment = ffi.string(C.GetSubordinateGroupAssignment(dock_menu.currentplayership, group))
+                        usedassignments[assignment] = i
+                        groups[group] = { assignment = assignment, subordinates = { subordinate }, numassignableresupplyships = (shiptype == "resupplier") and 1 or 0, numassignableminingships = (purpose == "mine") and 1 or 0 }
+                    end
+                end
+            end
+
+            if #subordinates > 0 then
+                table_header:addEmptyRow(yoffset)
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.transparent })
+                row[1]:setColSpan(11):createText(ReadText(1001, 8626), Helper.headerRowCenteredProperties)
+
+                local row = table_header:addRow(false, { bgColor = Helper.color.unselectable })
+                row[1]:createText(ReadText(1001, 8627), { font = Helper.standardFontBold, halign = "center" })
+                row[2]:createText(ReadText(1001, 8373), { font = Helper.standardFontBold, halign = "center" })
+                row[7]:createText(ReadText(1001, 8628), { font = Helper.standardFontBold, halign = "center" })
+
+                for i = 1, 10 do
+                    if groups[i] then
+                        local supplyactive = (groups[i].numassignableresupplyships == #groups[i].subordinates) and ((not usedassignments["supplyfleet"]) or (usedassignments["supplyfleet"] == i))
+                        local subordinateassignments = {
+                            [1] = { id = "defence",         text = ReadText(20208, 40301),  icon = "",  displayremoveoption = false },
+                            [2] = { id = "supplyfleet",     text = ReadText(20208, 40701),  icon = "",  displayremoveoption = false, active = supplyactive, mouseovertext = supplyactive and "" or ReadText(1026, 8601) },
+                        }
+
+                        if C.IsComponentClass(dock_menu.currentplayership, "station") then
+                            local miningactive = (groups[i].numassignableminingships == #groups[i].subordinates) and ((not usedassignments["mining"]) or (usedassignments["mining"] == i))
+                            table.insert(subordinateassignments, { id = "mining", text = ReadText(20208, 40201), icon = "", displayremoveoption = false, active = miningactive, mouseovertext = miningactive and "" or ReadText(1026, 8602) })
+                            local tradeactive = (not usedassignments["trade"]) or (usedassignments["trade"] == i)
+                            table.insert(subordinateassignments, { id = "trade", text = ReadText(20208, 40101), icon = "", displayremoveoption = false, active = tradeactive, mouseovertext = tradeactive and ((groups[i].numassignableminingships > 0) and (Helper.convertColorToText(Helper.color.warningorange) .. ReadText(1026, 8607)) or "") or ReadText(1026, 7840) })
+                            local tradeforbuildstorageactive = (groups[i].numassignableminingships == 0) and ((not usedassignments["tradeforbuildstorage"]) or (usedassignments["tradeforbuildstorage"] == i))
+                            table.insert(subordinateassignments, { id = "tradeforbuildstorage", text = ReadText(20208, 40801), icon = "", displayremoveoption = false, active = tradeforbuildstorageactive, mouseovertext = tradeforbuildstorageactive and "" or ReadText(1026, 8603) })
+                        elseif C.IsComponentClass(dock_menu.currentplayership, "ship") then
+                            table.insert(subordinateassignments, { id = "attack", text = ReadText(20208, 40901), icon = "", displayremoveoption = false })
+                            table.insert(subordinateassignments, { id = "interception", text = ReadText(20208, 41001), icon = "", displayremoveoption = false })
+                            table.insert(subordinateassignments, { id = "follow", text = ReadText(20208, 41301), icon = "", displayremoveoption = false })
+                            local active = true
+                            local mouseovertext = ""
+                            local buf = ffi.new("Order")
+                            if not C.GetDefaultOrder(buf, dock_menu.currentplayership) then
+                                active = false
+                                mouseovertext = ReadText(1026, 8606)
+                            end
+                            table.insert(subordinateassignments, { id = "assist", text = ReadText(20208, 41201), icon = "", displayremoveoption = false, active = active, mouseovertext = mouseovertext })
+                            if GetComponentData(dock_menu.currentplayership, "shiptype") == "resupplier" then
+                                table.insert(subordinateassignments, { id = "trade", text = ReadText(20208, 40101), icon = "", displayremoveoption = false })
+                            end
+                        end
+
+                        local isdockingpossible = false
+                        for _, subordinate in ipairs(groups[i].subordinates) do
+                            if IsDockingPossible(subordinate, dock_menu.currentplayership) then
+                                isdockingpossible = true
+                                break
+                            end
+                        end
+                        local active = true
+                        local mouseovertext = ""
+                        if not GetComponentData(dock_menu.currentplayership, "hasshipdockingbays") then
+                            active = false
+                            mouseovertext = ReadText(1026, 8604)
+                        elseif not isdockingpossible then
+                            active = false
+                            mouseovertext = ReadText(1026, 8605)
+                        end
+
+                        local row = table_header:addRow("subordinate_config", { bgColor = Helper.color.transparent })
+                        row[1]:createText(function () dock_menu.updateSubordinateGroupInfo(); return ReadText(20401, i) .. (dock_menu.subordinategroups[i] and (" (" .. ((not C.ShouldSubordinateGroupDockAtCommander(dock_menu.currentplayership, i)) and ((#dock_menu.subordinategroups[i].subordinates - dock_menu.subordinategroups[i].numdockedatcommander) .. "/") or "") .. #dock_menu.subordinategroups[i].subordinates ..")") or "") end, { color = isblocked and Helper.color.warningorange or nil })
+                        row[2]:setColSpan(5):createDropDown(subordinateassignments, { startOption = function () dock_menu.updateSubordinateGroupInfo(); return dock_menu.subordinategroups[i] and dock_menu.subordinategroups[i].assignment or "" end })
+                        row[2].handlers.onDropDownConfirmed = function (_, newassignment) C.SetSubordinateGroupAssignment(dock_menu.currentplayership, i, newassignment) end
+                        row[7]:setColSpan(5):createButton({ active = active, mouseOverText = mouseovertext }):setText(function () return C.ShouldSubordinateGroupDockAtCommander(dock_menu.currentplayership, i) and ReadText(1001, 8630) or ReadText(1001, 8629) end, { halign = "center" })
+                        row[7].handlers.onClick = function () return C.SetSubordinateGroupDockAtCommander(dock_menu.currentplayership, i, not C.ShouldSubordinateGroupDockAtCommander(dock_menu.currentplayership, i)) end
+                    end
+                end
+            end
+        end
+    else
+        local row = table_header:addRow("buttonRow1", { bgColor = Helper.color.transparent, fixed = true })
+        local active = canwareexchange
+        row[1]:createButton(active and {helpOverlayID = "docked_transferwares", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1001, 8618), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties) -- "Transfer Wares"
+        if active then
+            row[1].handlers.onClick = function() return dock_menu.buttonTrade(true) end
+        end
+        local active = dock_menu.currentplayership ~= 0
+        row[2]:createButton(active and { mouseOverText = GetLocalizedKeyName("action", 277), helpOverlayID = "docked_getup", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1002, 20014), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)   -- "Get Up"
+        row[2].handlers.onClick = dock_menu.buttonGetUp
+        local active = dock_menu.currentplayership ~= 0
+        row[7]:createButton(active and { mouseOverText = GetLocalizedKeyName("action", 316), helpOverlayID = "docked_shipinfo", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1001, 8602), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties) -- "Ship Information"
+        if active then
+            row[7].handlers.onClick = dock_menu.buttonDockedShipInfo
+        end
+
+        local row = table_header:addRow("buttonRow2", { bgColor = Helper.color.transparent, fixed = true })
+        local active = canbuyship
+        row[1]:createButton(active and {helpOverlayID = "docked_buyships", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1002, 8008), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)  -- "Buy Ships"
+        if active then
+            row[1].handlers.onClick = dock_menu.buttonBuyShip
+        end
+        local active = cantrade
+        row[2]:createButton(active and {helpOverlayID = "docked_trade", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(ReadText(1002, 9005), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties) -- "Trade"
+        if active then
+            row[2].handlers.onClick = function() return dock_menu.buttonTrade(false) end
+        end
+        local active = canmodifyship
+        row[7]:createButton(active and {helpOverlayID = "docked_upgrade_repair", helpOverlayText = " ", helpOverlayHighlightOnly = true } or config.inactiveButtonProperties):setText(issupplyship and ReadText(1001, 7877) or ReadText(1001, 7841), active and config.activeButtonTextProperties or config.inactiveButtonTextProperties)   -- Upgrade / Repair Ship
+        if dockedplayerships[1] and (not canequip) then
+            row[7].properties.mouseOverText = (C.IsComponentClass(dockedplayerships[1], "ship_l") or C.IsComponentClass(dockedplayerships[1], "ship_xl")) and ReadText(1026, 7807) or ReadText(1026, 7806)
+        elseif not isdock then
+            row[7].properties.mouseOverText = ReadText(1026, 8014)
+        end
+        if active then
+            row[7].handlers.onClick = dock_menu.buttonModifyShip
+        end
+
+        local row = table_header:addRow("buttonRow3", { bgColor = Helper.color.transparent, fixed = true })
+        row[1]:createButton(config.inactiveButtonProperties):setText("", config.inactiveButtonTextProperties)   -- dummy
+        if dock_menu.currentplayership ~= 0 then
+            row[2]:createButton({ mouseOverText = GetLocalizedKeyName("action", 175), bgColor = dock_menu.undockButtonBGColor, highlightColor = dock_menu.undockButtonHighlightColor, helpOverlayID = "docked_undock", helpOverlayText = " ", helpOverlayHighlightOnly = true }):setText(ReadText(1002, 20013), { halign = "center", color = dock_menu.undockButtonTextColor })    -- "Undock"
+            row[2].handlers.onClick = dock_menu.buttonUndock
+        else
+            row[2]:createButton({ mouseOverText = GetLocalizedKeyName("action", 175), helpOverlayID = "docked_gotoship", helpOverlayText = " ", helpOverlayHighlightOnly = true }):setText(ReadText(1001, 7305), { halign = "center" }) -- "Go to Ship"
+            row[2].handlers.onClick = dock_menu.buttonGoToShip
+        end
+        row[7]:createButton(config.inactiveButtonProperties):setText("", config.inactiveButtonTextProperties)   -- dummy
+
+        local row = table_header:addRow(false, { bgColor = Helper.color.transparent, fixed = true })
+        row[1]:setColSpan(11):createBoxText(dock_menu.infoText, { halign = "center", color = Helper.color.warningorange, boxColor = dock_menu.infoBoxColor })
+    end
+
+
+    if dock_menu.table_header then
+        table_header:setTopRow(GetTopRow(dock_menu.table_header))
+        table_header:setSelectedRow(dock_menu.selectedRows.header or Helper.currentTableRow[dock_menu.table_header])
+        table_header:setSelectedCol(dock_menu.selectedCols.header or Helper.currentTableCol[dock_menu.table_header] or 0)
+    else
+        table_header:setSelectedRow(dock_menu.selectedRows.header)
+        table_header:setSelectedCol(dock_menu.selectedCols.header or 0)
+    end
+    dock_menu.selectedRows.header = nil
+    dock_menu.selectedCols.header = nil
+
+    table_header.properties.maxVisibleHeight = Helper.viewHeight - table_header.properties.y - Helper.frameBorder
+    dock_menu.frame.properties.height = math.min(Helper.viewHeight, table_header:getVisibleHeight() + table_header.properties.y + Helper.scaleY(Helper.standardButtonHeight))
+
+    -- display view/frame
+    dock_menu.frame:display()
+end
+
 init()
