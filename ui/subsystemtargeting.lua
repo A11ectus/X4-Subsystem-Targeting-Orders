@@ -30,10 +30,44 @@ local config = {
         { id = "defence",       name = ReadText(20214, 300) },
         { id = "transport",     name = ReadText(20214, 900) },
     },
+	turretmodes = {
+		[1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+		[2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+		[3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+		[4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+		[5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+		[6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+		[7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+	},
+    turretmodesstation = { 
+		[1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false }, 
+		[2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false }, 
+		[3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false }, 
+		[4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false }, 
+		[5] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false }, 
+	}, 
+    turretmodesexpanded = { 
+		[1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+		[2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+		[3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+		[4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+		[5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+		[6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+		[7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+		[8] = { id = "targetsubengines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
+		[9] = { id = "targetsubshields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
+		[10] = { id = "targetsubmturrets", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
+		[11] = { id = "targetsublturrets", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
+		[12] = { id = "targetsubmissiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
+		[13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
+		[14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
+		[15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false },
+	}, 
+	turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" },
     mapRowHeight = Helper.standardTextHeight, 
     mapFontSize = Helper.standardFontSize, 
     infoFrameLayer2 = 5, 
-    infoFrameLayer = 4, 
+    infoFrameLayer = 4 
 } 
  
 local function init() 
@@ -321,40 +355,13 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
  
             if (#menu.turrets > 0) or (#menu.turretgroups > 0) then 
                 if mode == "ship" then 
-                    local turretmodes = { 
-                        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false }, 
-                        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false }, 
-                        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false }, 
-                        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false }, 
-                        [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false }, 
-                        [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false }, 
-                        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false } 
-                    } 
- 
-                    local turretmodesexpanded = { 
-                        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
-                        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
-                        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
-                        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
-                        [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
-                        [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
-                        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
-                        [8] = { id = "targetsubengines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
-                        [9] = { id = "targetsubshields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
-                        [10] = { id = "targetsubmturrets", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
-                        [11] = { id = "targetsublturrets", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
-                        [12] = { id = "targetsubmissiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
-						[13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
-						[14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
-						[15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false }
-                    } 
-					
+
 					local pilotentityid = GetControlEntity(inputobject)
 					
                     local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
-                    row[5]:setColSpan(9):createDropDown(turretmodesexpanded, { startOption = function () 
-						local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
+                    row[5]:setColSpan(9):createDropDown(config.turretmodesexpanded, { startOption = function () 
+						local startoption = dock_menu.getDropDownTurretModeOption(inputobject, "all") 
 						if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
 							startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
 						end
@@ -363,9 +370,7 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
 					}) 
                     row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
 
-						local turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" }
-
-                        if turretmode_t[newturretmode] then 
+                        if config.turretmode_t[newturretmode] then 
                             AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
 							SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
 						elseif newturretmode == "targetsubclear" then
@@ -389,7 +394,7 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
  
                         local row = inputtable:addRow("info_turretconfig" .. i, { bgColor = Helper.color.transparent }) 
                         row[2]:setColSpan(3):createText(ffi.string(C.GetComponentName(turret))) 
-                        row[5]:setColSpan(9):createDropDown(turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(turret) end }) 
+                        row[5]:setColSpan(9):createDropDown(config.turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(turret) end }) 
                         row[5].handlers.onDropDownConfirmed = function(_, newturretmode) menu.noupdate = false; C.SetWeaponMode(turret, newturretmode) end 
                         row[5].handlers.onDropDownActivated = function () menu.noupdate = true end 
                         dropdownCount = dropdownCount + 1 
@@ -409,7 +414,7 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
  
                         local row = inputtable:addRow("info_turretgroupconfig" .. i, { bgColor = Helper.color.transparent }) 
                         row[2]:setColSpan(3):createText(name, { color = (group.operational > 0) and Helper.color.white or Helper.color.red }) 
-                        row[5]:setColSpan(9):createDropDown(turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, group.context, group.path, group.group) end, active = group.operational > 0 }) 
+                        row[5]:setColSpan(9):createDropDown(config.turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, group.context, group.path, group.group) end, active = group.operational > 0 }) 
                         row[5].handlers.onDropDownConfirmed = function(_, newturretmode) menu.noupdate = false; C.SetTurretGroupMode2(inputobject, group.context, group.path, group.group, newturretmode) end 
                         row[5].handlers.onDropDownActivated = function () menu.noupdate = true end 
                         dropdownCount = dropdownCount + 1 
@@ -421,20 +426,12 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                         row[5]:setColSpan(9):createButton({ height = config.mapRowHeight }):setText(function () return C.IsTurretGroupArmed(inputobject, group.context, group.path, group.group) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" }) 
                         row[5].handlers.onClick = function () return C.SetTurretGroupArmed(inputobject, group.context, group.path, group.group, not C.IsTurretGroupArmed(inputobject, group.context, group.path, group.group)) end 
                     end 
-                elseif mode == "station" then 
-                    local turretmodes = { 
-                        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false }, 
-                        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false }, 
-                        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false }, 
-                        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false }, 
-                        [5] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false }, 
-                    } 
- 
+                elseif mode == "station" then  
                     if hasnormalturrets then 
                         -- non-missile 
                         local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                         row[2]:setColSpan(3):createText(ReadText(1001, 8397)) 
-                        row[5]:setColSpan(9):createDropDown(turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all", false) end, active = hasoperationalnormalturrets, mouseOverText = (not hasoperationalnormalturrets) and ReadText(1026, 3235) or nil }) 
+                        row[5]:setColSpan(9):createDropDown(config.turretmodesstation, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all", false) end, active = hasoperationalnormalturrets, mouseOverText = (not hasoperationalnormalturrets) and ReadText(1026, 3235) or nil }) 
                         row[5].handlers.onDropDownConfirmed = function(_, newturretmode) menu.noupdate = false; C.SetAllNonMissileTurretModes(inputobject, newturretmode) end 
                         row[5].handlers.onDropDownActivated = function () menu.noupdate = true end 
  
@@ -446,7 +443,7 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                         -- missile 
                         local row = inputtable:addRow("info_turretconfig_missile", { bgColor = Helper.color.transparent }) 
                         row[2]:setColSpan(3):createText(ReadText(1001, 9031)) 
-                        row[5]:setColSpan(9):createDropDown(turretmodes, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all", true) end, active = hasoperationalmissileturrets, mouseOverText = (not hasoperationalnormalturrets) and ReadText(1026, 3235) or nil }) 
+                        row[5]:setColSpan(9):createDropDown(config.turretmodesstation, { startOption = function () return menu.getDropDownTurretModeOption(inputobject, "all", true) end, active = hasoperationalmissileturrets, mouseOverText = (not hasoperationalnormalturrets) and ReadText(1026, 3235) or nil }) 
                         row[5].handlers.onDropDownConfirmed = function(_, newturretmode) menu.noupdate = false; C.SetAllMissileTurretModes(inputobject, newturretmode) end 
                         row[5].handlers.onDropDownActivated = function () menu.noupdate = true end 
  
@@ -1327,41 +1324,14 @@ function sto_menu.display()
                 local row = table_header:addRow(false, { bgColor = Helper.color.unselectable })
                 row[2]:createText(ReadText(1001, 8620), { font = Helper.standardFontBold, halign = "center" })
                 row[7]:createText(ReadText(1001, 12),   { font = Helper.standardFontBold, halign = "center" })
-
-                local turretmodes = {
-                    [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
-                    [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
-                    [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
-                    [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
-                    [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
-                    [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
-                    [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
-                }
-
-                local turretmodesexpanded = { 
-                    [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
-                    [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
-                    [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
-                    [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
-                    [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
-                    [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
-                    [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
-                    [8] = { id = "targetsubengines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
-                    [9] = { id = "targetsubshields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
-                    [10] = { id = "targetsubmturrets", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
-                    [11] = { id = "targetsublturrets", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
-                    [12] = { id = "targetsubmissiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
-                    [13] = { id = "targetsubbatteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
-                    [14] = { id = "targetsubdisable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
-                    [15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false }
-                } 
                     
                 local pilotentityid = GetControlEntity(dock_menu.currentplayership)
 
                 local row = table_header:addRow("turret_config", { bgColor = Helper.color.transparent })
                 row[1]:createText(ReadText(1001, 2963))
-                row[2]:setColSpan(5):createDropDown(turretmodesexpanded, { startOption = function () 
-                        local startoption = menu.getDropDownTurretModeOption(inputobject, "all")
+				
+                row[2]:setColSpan(5):createDropDown(config.turretmodesexpanded, { startOption = function () 
+                        local startoption = dock_menu.getDropDownTurretModeOption(dock_menu.currentplayership, "all")
                         if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
                             startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
                         end
@@ -1369,17 +1339,15 @@ function sto_menu.display()
                     end, helpOverlayID = "docked_turretconfig_modes", helpOverlayText = " ", helpOverlayHighlightOnly = true  })
                 row[2].handlers.onDropDownConfirmed = function(_, newturretmode)
 
-                    local turretmode_t = { ["targetsubengines"] = "targetsubengines", ["targetsubshields"] = "targetsubshields", ["targetsubmturrets"] = "targetsubmturrets", ["targetsublturrets"] = "targetsublturrets", ["targetsubmissiles"] = "targetsubmissiles", ["targetsubbatteries"] = "targetsubbatteries", ["targetsubdisable"] = "targetsubdisable" }
-
-                    if turretmode_t[newturretmode] then 
+                    if config.turretmode_t[newturretmode] then 
                         AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
                         SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
                     elseif newturretmode == "targetsubclear" then
-						menu.noupdate = false 
+						dock_menu.noupdate = false 
                         AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
                         SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
                     else
-                        menu.noupdate = false 
+                        dock_menu.noupdate = false 
                         C.SetAllTurretModes(dock_menu.currentplayership, newturretmode) 
                     end 
                 end
@@ -1397,7 +1365,7 @@ function sto_menu.display()
                         mouseovertext = turretname
                     end
                     row[1]:createText(turretname, { mouseOverText = mouseovertext })
-                    row[2]:setColSpan(5):createDropDown(turretmodes, { startOption = function () return dock_menu.getDropDownTurretModeOption(turret) end, helpOverlayID = "docked_turrets_modes".. turretscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+                    row[2]:setColSpan(5):createDropDown(config.turretmodes, { startOption = function () return dock_menu.getDropDownTurretModeOption(turret) end, helpOverlayID = "docked_turrets_modes".. turretscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  })
                     row[2].handlers.onDropDownConfirmed = function(_, newturretmode) C.SetWeaponMode(turret, newturretmode) end
                     row[7]:setColSpan(5):createButton({helpOverlayID = "docked_turrets_arm" .. turretscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true   }):setText(function () return C.IsWeaponArmed(turret) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" })
                     row[7].handlers.onClick = function () return C.SetWeaponArmed(turret, not C.IsWeaponArmed(turret)) end
@@ -1414,7 +1382,7 @@ function sto_menu.display()
                         mouseovertext = groupname
                     end
                     row[1]:createText(groupname, { color = (group.operational > 0) and Helper.color.white or Helper.color.red, mouseOverText = mouseovertext })
-                    row[2]:setColSpan(5):createDropDown(turretmodes, { startOption = function () return dock_menu.getDropDownTurretModeOption(dock_menu.currentplayership, group.context, group.path, group.group) end, active = group.operational > 0, helpOverlayID = "docked_turretgroups_modes".. turretgroupscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+                    row[2]:setColSpan(5):createDropDown(config.turretmodes, { startOption = function () return dock_menu.getDropDownTurretModeOption(dock_menu.currentplayership, group.context, group.path, group.group) end, active = group.operational > 0, helpOverlayID = "docked_turretgroups_modes".. turretgroupscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  })
                     row[2].handlers.onDropDownConfirmed = function(_, newturretmode) C.SetTurretGroupMode2(dock_menu.currentplayership, group.context, group.path, group.group, newturretmode) end
                     row[7]:setColSpan(5):createButton({ helpOverlayID = "docked_turretgroups_arm" .. turretgroupscounter, helpOverlayText = " ", helpOverlayHighlightOnly = true  }):setText(function () return C.IsTurretGroupArmed(dock_menu.currentplayership, group.context, group.path, group.group) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" })
                     row[7].handlers.onClick = function () return C.SetTurretGroupArmed(dock_menu.currentplayership, group.context, group.path, group.group, not C.IsTurretGroupArmed(dock_menu.currentplayership, group.context, group.path, group.group)) end
