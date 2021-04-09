@@ -1375,6 +1375,7 @@ function sto_menu.display()
                         AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
                         SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
                     elseif newturretmode == "targetsubclear" then
+						menu.noupdate = false 
                         AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
                         SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
                     else
