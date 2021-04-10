@@ -1,12 +1,18 @@
 Subsystem Targeting Orders
-by Allectus
-Contributors: Forleyor, Rovermicrover
 
-https://github.com/A11ectus/X4-Subsystem-Targeting-Orders
+By: Allectus
+
+Contributors: Forleyor, Rovermicrover, Vali_Lutzifer
+
+Github: https://github.com/A11ectus/X4-Subsystem-Targeting-Orders
+
+Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=2437198154
+
+Nexus: https://www.nexusmods.com/x4foundations/mods/645
 
 Mod effects:
 ============
-Adds turret secondary targets and several new orders to the holomap right-click menu that allows you to direct your owned ships to explicitly target ship and station subsystems:
+Adds additional turret behaviours and several new orders to the holomap right-click menu that allows you to direct your owned ships to explicitly target ship and station subsystems:
 
 -AI order: Attack Engines
 -AI order: Attack Shields
@@ -23,64 +29,66 @@ Adds turret secondary targets and several new orders to the holomap right-click 
 
 Requirements:
 =============
-SirNukes Mod Suppot API
+SirNukes Mod Support API
 
 What the mod does:
 ==================
 
 This mod adds several orders to the right click menu on the map that allow you to explicitly target subsystems on hostile capital ships and stations.  The commands are context sensitive and will only appear if a salient target is available.
 
-* AI order: Attack Engines -- destroy engines
+	* AI order: Attack Engines -- destroy engines
 
-* AI order: Attack Shields -- destroy shield generators of size L or XL, focussing on the active shield generators that provide the most maximum shield
+	* AI order: Attack Shields -- destroy shield generators of size L or XL, focussing on the active shield generators that provide the most maximum shield
 
-* AI order: Attack Weps, Med Turrets -- destroy S & M sized turrets, focussing on weapons with the lowest max hp (correlates with anti-fighter weapons)
+	* AI order: Attack Weps, Med Turrets -- destroy S & M sized turrets, focussing on weapons with the lowest max hp (correlates with anti-fighter weapons)
 
-* AI order: Attack Weps, Hvy Turrets -- destroy L & XL sized turrets, focussing on weapons with the highest max hp (correlates with anti-capital weapons)
+	* AI order: Attack Weps, Hvy Turrets -- destroy L & XL sized turrets, focussing on weapons with the highest max hp (correlates with anti-capital weapons)
 
-* AI order: Attack Weps, Missile Launchers  -- destroy missile turrets, focusing on weapons with the highest max hp (correlates with anti-capital weapons)
+	* AI order: Attack Weps, Missile Launchers  -- destroy missile turrets, focusing on weapons with the highest max hp (correlates with anti-capital weapons)
 
-* AI order: Attack Weps, Main Batteries  -- destroy fixed weapons, focusing on weapons with the highest max hp (correlates with anti-capital weapons)
+	* AI order: Attack Weps, Main Batteries  -- destroy fixed weapons, focusing on weapons with the highest max hp (correlates with anti-capital weapons)
 
-* AI order: Attack Subs, Disable All  -- single command that proceeds through all of the above commands in order: engines -> missile launchers -> med turrets -> hvy turrets -> shields -> batteries
+	* AI order: Attack Subs, Disable All  -- single command that proceeds through all of the above commands in order: engines -> missile launchers -> med turrets -> hvy turrets -> shields -> batteries
 
-* AI order: Attack Station Docks  -- Attack station dock modules, focussing on the closest matching target
+	* AI order: Attack Station Docks  -- Attack station dock modules, focussing on the closest matching target
 
-* AI order: Attack Station Storage  -- Attack station storage modules, focussing on the closest matching target
+	* AI order: Attack Station Storage  -- Attack station storage modules, focussing on the closest matching target
 
-* AI order: Attack Station Production  -- Attack station production modules, focussing on the closest matching target
+	* AI order: Attack Station Production  -- Attack station production modules, focussing on the closest matching target
 
-* AI order: Attack Station Def. Platforms  -- Attack station defense platforms, focussing on the closest matching target
+	* AI order: Attack Station Def. Platforms  -- Attack station defense platforms, focussing on the closest matching target
 
-* AI order: Attack Station Shipyard Platforms  -- Attack station shipbuilding and outfitting modules, focussing on the closest matching target
+	* AI order: Attack Station Shipyard Platforms  -- Attack station shipbuilding and outfitting modules, focussing on the closest matching target
 
 This mod further modifies turret targeting behaviour to allow for secondary targets and subsystem targeting:
 
-* Defend: No change
+	* Defend: No change
 
-* Attack All Enemies: attack subsystem target (if set) -> attack all enemies
+	* Attack All Enemies: attack subsystem target (if set) -> attack all enemies
 
-* Attack Capital Ships: No change
+	* Attack Capital Ships: No change
 
-* Attack Fighters: attack fighters -> attack incoming missiles -> attack subsystem target (if set)
+	* Attack Fighters: attack fighters -> attack incoming missiles -> attack subsystem target (if set)
 
-* Mining: No change    
+	* Mining: No change    
     
-* Missile defence: attack incoming missiles -> attack fighters (as of X4 4.0HF3 the underlying vanilla missile defence routine is broken and will not attack targets under most circumstances; this is a vanilla bug and not a result of this mod)
+	* Missile defence: attack incoming missiles -> attack fighters (as of X4 4.0HF3 the underlying vanilla missile defence routine is broken and will not attack targets under most circumstances; this is a vanilla bug and not a result of this mod)
 
-* Attack My Target: No change (hardcoded by Egosoft/cannot be changed)
+	* Attack My Target: No change (hardcoded by Egosoft/cannot be changed)
 
 Some Notes:
 
-	* Turret targeting behaviour is set/cleared via the 'all turrets' drop down menu in the turret interface
-
 	* Once the subsystems covered by a given order have been destroyed the order concludes and wing may be tasked elsewhere.  This allows you to string together the commands as you see fit.  I recommend basically always knocking engines out first as it much easier to hit the other targets. 
+
+	* Turret targeting behaviour is set/cleared for all turrets via the 'all turrets' drop down menu in the turret interface.  Turrets with a set subsystem target will prioritize subsystems on your selected target.  If a subsystem targeting order is given to the ship a matching subsystem turret target priority will also be set.  If the order subsequently concludes normally the turret subsystem targeting will be reset to the state it was in prior to the order being issued--if the order is forcefully cancelled this reset will not occur and the turret target will persist.
+	
+	* Turret targeting is a bit sticky by design and will not rapidly switch if new targets appear.  This is the reason I have not added attack all enemies to the stack for fighters/missile defence--they'll frequently get locked on to capitals and not do their primary job effectively.
 	
 	* When attacking with capital ships (L/XL) they will only see as valid targets subsystems that are within line of sight at order initiation (or order recycling if the initial target is destroyed).  If you see an available subsystem targeting order in the right click menu (indicating active subsystems) but your capital ships cancel the order immediately after it's issued it's because they don't have line of sight to the remaining active subsystems in that category.  This is to prevent excessive capital ship maneuvering to try and get shots on subsystems on the far side of the target.  This requirement is not enforced when targeting station modules.
 	
 	* Attack Weps, Main Batteries -- This targeting behaviour was originally rolled into the Attack Weps options but it turns out that the armoured cowling around, for example, the Behemoth's main batteries is actually pretty effective at protecting them and player ships can have a hard time finding a good attack vector without some manual help on initial positioning (in fact it's not clear that the logic is picking up on the batteries being obstructed by the hull and I haven't yet found a fix for it).  This often resulted in the target dying before any weapons were disabled if ships didn't have a good initial vector. Use wisely, commander.
 		
-	* Attack Subs, Disable All-- While convenient, note that this substantially amounts to an order to kill the target, but to do it much slower than if you'd just given a standard attack command since few ships are able to survive the sustained fire it takes to completely strip them while it still takes longer than necessary to apply that fire as your ships maneuver on target.  Use wisely, commander.
+	* Attack Subs, Disable All-- While convenient, note that this substantially amounts to an order to kill the target, but to do it much slower than if you'd just given a standard attack command since few ships are able to survive the sustained fire it takes to completely strip them while it still takes longer than necessary to apply that fire as your ships maneuver on target.  Note also that the turret version of this command does note enforce any subsystem priority and will instead attack any available subsystem. Use wisely, commander. 
 	
 Recommended patterns:  
 	
@@ -92,7 +100,7 @@ Recommended patterns:
 	
 	* Attack engines -> attack shields (repeat on new target) : if you have shield piercing weapons to rapidly remove hostile defences.
 	
-	* Attack storage (repeat on new target) : to cripple a hostile economy quickly and efficiently
+	* Attack station storage (repeat on new target) : to cripple a hostile economy quickly and efficiently
 
 See here for a demonstration: https://youtu.be/lxINgqgoo7U
 
@@ -102,19 +110,19 @@ See here for a demonstration: https://youtu.be/lxINgqgoo7U
 
 2.1 update video here: https://youtu.be/7WC-eeMZ7EY
 
+3.0 update video here: 
+
 Install:
 ========
 -Unzip to 'X4 Foundations/extensions/al_subsystem_targeting_orders'.
 
 -Make sure the sub-folders and files are in 'X4 Foundations/extensions/al_subsystem_targeting_orders' and not in 'X4 Foundations/extensions/al_subsystem_targeting_orders'.
 
--If 'X4 Foundations/extensions/' is inaccessible, try 'Documents/Egosoft/X4/XXXXXXXX/extensions/al_subsystem_targeting_orders' - where XXXXXXXX is a number that is specific to your computer.
-
 -Installation is savegame safe
 
 Uninstall:
 ==========
--Delete the mod folder.
+-Delete the mod folder / unsubscribe on steam.
 
 My Thanks:
 ============
@@ -142,4 +150,4 @@ History:
 
 * 2.1, 2021-04-03: Changed capital ship aggressor requirement when targeting subsystems other than station modules to require line of sight to the target subsystem on order initiation.  Should reduce the number of destroyers trying to (ineffectually) fly around targets to gen a firing solution on targeted subsystems.
 	
-* 3.0, 2021-04-10: Added addtional targeting priorities to turrets
+* 3.0, 2021-04-10: Added additional targeting priorities/commands for turrets
