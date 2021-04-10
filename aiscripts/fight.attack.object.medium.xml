@@ -1,116 +1,230 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 
 <diff>
-
-  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$incomingmissiles.count and $turretmodes.indexof.{weaponmode.missiledefence}']">
-	<do_if value="($incomingmissiles.count or $targets_fighters.count) and $turretmodes.indexof.{weaponmode.missiledefence}">
-		<create_group groupname="$targets_final"/>
-		<add_to_group groupname="$targets_final" group="$incomingmissiles"/>
-
-		<set_value name="$locpreferred" exact="$preferredtarget"/>
-		
-		<do_if value="$incomingmissiles.count">
-			<do_if value="$locpreferred">
-				<do_if value="not $incomingmissiles.indexof.{$locpreferred}">
-					<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
-				</do_if>
-			</do_if>
-			<do_else>
-				<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
-			</do_else>
-		</do_if>
-		<do_else>
-			<add_to_group groupname="$targets_final" group="$targets_fighters"/>
-			
-			<do_if value="$locpreferred">
-				<do_if value="not $targets_fighters.indexof.{$locpreferred}">
-					<set_value name="$locpreferred" exact="$targets_fighters.random"/>
-				</do_if>
-			</do_if>
-			<do_else>
-				<set_value name="$locpreferred" exact="$targets_fighters.random"/>
-			</do_else>		
-		</do_else>
-		
-		<debug_text text="'%s %s missile defence active.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+  <add sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets.count and $turretmodes.indexof.{weaponmode.attackenemies}']" pos='before'>
+	<set_value name="$locsubsyspref" exact="this.controllable.pilot.$SubTargetPref"/>		
 	
-		<set_turret_targets object="this.assignedcontrolled" target="$targets_final.list" weaponmode="weaponmode.missiledefence" preferredtarget="$locpreferred"/>
-		<remove_value name="$targets_final"/>		
-    </do_if>
-  </replace>
+	<do_if value="$locsubsyspref == 'targetsubengines'">
+		<set_value name="$locsubsystarget" exact="[class.engine]"/>
+		<set_value name="$locsubsystargettags" exact="null"/>
+	</do_if>
+	</do_elseif value="$locsubsyspref == 'targetsubshields'">
+		<set_value name="$locsubsystarget" exact="[class.shieldgenerator]"/>
+		<set_value name="$locsubsystargettags" exact="[tag.large, tag.extralarge]"/>
+	</do_elseif>
+	</do_elseif value="$locsubsyspref == 'targetsubmturrets'">
+		<set_value name="$locsubsystarget" exact="[class.turret]"/>
+		<set_value name="$locsubsystargettags" exact="[tag.small, tag.medium]"/>
+	</do_elseif>
+	</do_elseif value="$locsubsyspref == 'targetsublturrets'">
+		<set_value name="$locsubsystarget" exact="[class.turret]"/>
+		<set_value name="$locsubsystargettags" exact="[tag.large, tag.extralarge]"/>
+	</do_elseif>	
+	</do_elseif value="$locsubsyspref == 'targetsubmissiles'">
+		<set_value name="$locsubsystarget" exact="[class.missileturret]"/>
+		<set_value name="$locsubsystargettags" exact="null"/>
+	</do_elseif>		
+	</do_elseif value="$locsubsyspref == 'targetsubbatteries'">
+		<set_value name="$locsubsystarget" exact="[class.weapon]"/>
+		<set_value name="$locsubsystargettags" exact="[tag.weapon]"/>
+	</do_elseif>			
+	</do_elseif value="$locsubsyspref == 'targetsubdisable'">
+		<set_value name="$locsubsystarget" exact="[class.engine, class.missileturret, class.turret, class.shieldgenerator, class.weapon]"/>
+		<set_value name="$locsubsystargettags" exact="null"/>
+	</do_elseif>				
+	<do_else>
+		<set_value name="$locsubsystarget" exact="[]"/>
+		<set_value name="$locsubsystargettags" exact="null"/>
+	</do_else>
+  </add>
   
-  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets_fighters.count and $turretmodes.indexof.{weaponmode.attackfighters}']">
-  
-  <!--
-	<do_if value="($targets_fighters.count or $incomingmissiles.count) and $turretmodes.indexof.{weaponmode.attackfighters}">
-	-->
-	<do_if value="($targets_fighters.count or $incomingmissiles.count or $targets_capital.count) and $turretmodes.indexof.{weaponmode.attackfighters}">
-		<create_group groupname="$targets_final"/>
-		<!--<add_to_group groupname="$targets_final" group="$targets_fighters"/>-->
+  <!-- set turret targets (weapon mode: attack enemies) -->
+  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets.count and $turretmodes.indexof.{weaponmode.attackenemies}']">
+	<do_if value="$targets.count and $turretmodes.indexof.{weaponmode.attackenemies}">		
+		<create_group groupname="$targets_final"/>	
 		<set_value name="$locpreferred" exact="$preferredtarget"/>
-		<set_value name="$locsubsyspref" exact="this.controllable.pilot.$SubTargetPref"/>
 		
-		<debug_text text="'%s %s (d1) Attack fighters  active.'.[$locsubsyspref, $locpreferred]" chance="100"/>
-		
-		<do_if value="$locsubsyspref == 'targetsubengines'">
-			<do_for_each name="$capitaltarget" in="$targets_capital.list">
-				<find_object_component name="$locsecondarytargets" object="$capitaltarget" class="class.engine" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"/>	  
+		<do_if value="$locsubsystarget.count"> <!--Subsystem Targets (priority 1)-->
+			<do_if value="@$primarytarget.ship.iscapitalship"> <!--Primary Target Subsystems (priority 1a)-->
+				<do_if value="$locsubsyspref == 'targetsubbatteries'">
+					<find_object_component name="$locsecondarytargets" object="$primarytarget.ship" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags">
+						<match class="class.turret" negate="true"/>
+					</find_object_component>	
+				</do_if>
+				<do_else>
+					<find_object_component name="$locsecondarytargets" object="$primarytarget.ship" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags"/>
+				</do_else>
+				
+				<do_if value="$locsecondarytargets.count">
+					<add_to_group groupname="$targets_final" list="$locsecondarytargets"/>
+			
+					<!--if not already set, Select preferred target from all available subsys targets of primarytarget (priority 1a)-->
+					<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+						<set_value name="$locpreferred" exact="$targets_final.random"/>
+					</do_if>
+					
+					<debug_text text="'%s %s Attack enemies active, attacking primary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>
+				</do_if>
+			</do_if>
+			
+			<do_for_each name="$capitaltarget" in="$targets_capital.list"> <!--Other Capital Ship Subsystems (priority 1b)-->
+				<do_if value="$locsubsyspref == 'targetsubbatteries'">
+					<find_object_component name="$locsecondarytargets" object="$capitaltarget" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags">
+						<match class="class.turret" negate="true"/>
+					</find_object_component>	
+				</do_if>
+				<do_else>
+					<find_object_component name="$locsecondarytargets" object="$capitaltarget" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags"/>
+				</do_else>
 				
 				<do_if value="$locsecondarytargets.count">
 					<add_to_group groupname="$targets_final" list="$locsecondarytargets"/>
 				</do_if>
 			</do_for_each>
-			
-			<do_if value="$locpreferred and not $targets_final.indexof.{$locpreferred}">            
-				<set_value name="$locpreferred" exact="$targets_final.{1}"/>
+
+			<!--if not already set, select preferred target from all available subsys targets (priority 1b)-->
+			<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
-			<do_else>
-				<set_value name="$locpreferred" exact="$targets_final.{1}"/>
-			</do_else>
 			
-			<!--
-			<do_for_each name="$subsys" in="$targets_final.list">
-				<check_line_of_sight object="this.ship" target="$subsys" name="$isinview" />				
-				
-				<do_if value="$isinview">
-					<set_value name="$locpreferred" exact="$subsys"/>
-					<break/>
-				</do_if>
-			</do_for_each>
-			-->
-			
-			<debug_text text="'%s %s (d2) Attack engines active. targets_final %s'.[$locsubsyspref, $locpreferred, $targets_final]" chance="100"/>
+			<debug_text text="'%s %s Attack enemies active, attacking secondary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>		
 		</do_if>
+			
+		<add_to_group groupname="$targets_final" list="$targets.list"/>	
+
+		<!--if not already set, select preferred from all other enemies (priority 2)-->
+		<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+			<set_value name="$locpreferred" exact="$targets_final.random"/>
+		</do_if>	
 		
-		<!--
-		<do_if value="$targets_fighters.count">
-			<do_if value="$locpreferred">
-				<do_if value="not $targets_fighters.indexof.{$locpreferred}">
-					<set_value name="$locpreferred" exact="$targets_fighters.random"/>
-				</do_if>
+		<set_turret_targets object="this.ship" target="$targets_final.list" weaponmode="weaponmode.attackenemies" preferredtarget="$locpreferred"/>
+		<remove_value name="$targets_final"/>
+		
+    </do_if>
+  </replace>
+
+  <!-- weapon mode: attack fighters -->
+  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets_fighters.count and $turretmodes.indexof.{weaponmode.attackfighters}']">
+	<do_if value="($targets_fighters.count or $incomingmissiles.count or ($targets_capital.count and $locsubsystarget.count)) and $turretmodes.indexof.{weaponmode.attackfighters}">		
+		<create_group groupname="$targets_final"/>
+		<set_value name="$locpreferred" exact="$preferredtarget"/>
+		
+		<do_if value="$targets_fighters.count"> <!--Fighters (priority 1)-->
+			<add_to_group groupname="$targets_final" group="$targets_fighters"/>
+			
+			<!--if not already set, select preferred target from fighters (priority 1)-->
+			<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
-			<do_else>
-				<set_value name="$locpreferred" exact="$targets_fighters.random"/>
-			</do_else>
+			
+			<debug_text text="'%s %s Attack fighters active, attacking fighters.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+			
 		</do_if>
-		<do_else>
+		<do_elseif value="$incomingmissiles.count"> <!--Incoming missiles (priority 2)-->
 			<add_to_group groupname="$targets_final" group="$incomingmissiles"/>
 			
-			<do_if value="$locpreferred">
-				<do_if value="not $incomingmissiles.indexof.{$locpreferred}">
-					<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
+			<!--if not already set, select preferred target from incoming missiles (priority 2)-->
+			<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+				<set_value name="$locpreferred" exact="$targets_final.random"/>
+			</do_if>
+			
+			<debug_text text="'%s %s Attack fighters active, attacking missiles.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+			
+		</do_elseif>
+		<do_else> <!--Subsystem Targets (priority 3)-->
+			<do_if value="@$primarytarget.ship.iscapitalship"> <!--Primary Target Subsystems (priority 3a)-->
+				<do_if value="$locsubsyspref == 'targetsubbatteries'">
+					<find_object_component name="$locsecondarytargets" object="$primarytarget.ship" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags">
+						<match class="class.turret" negate="true"/>
+					</find_object_component>	
+				</do_if>
+				<do_else>
+					<find_object_component name="$locsecondarytargets" object="$primarytarget.ship" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags"/>
+				</do_else>
+				
+				<do_if value="$locsecondarytargets.count">
+					<add_to_group groupname="$targets_final" list="$locsecondarytargets"/>
+			
+					<!--if not already set, Select preferred target from all available subsys targets of primarytarget (priority 3a)-->
+					<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+						<set_value name="$locpreferred" exact="$targets_final.random"/>
+					</do_if>
+					
+					<debug_text text="'%s %s Attack fighters active, attacking primary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>
 				</do_if>
 			</do_if>
-			<do_else>
-				<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
-			</do_else>		
+			
+			<do_for_each name="$capitaltarget" in="$targets_capital.list"> <!--Other Capital Ship Subsystems (priority 3b)-->
+				<do_if value="$locsubsyspref == 'targetsubbatteries'">
+					<find_object_component name="$locsecondarytargets" object="$capitaltarget" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags">
+						<match class="class.turret" negate="true"/>
+					</find_object_component>	
+				</do_if>
+				<do_else>
+					<find_object_component name="$locsecondarytargets" object="$capitaltarget" class="$locsubsystarget" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="$locsubsystargettags"/>
+				</do_else>
+				
+				<do_if value="$locsecondarytargets.count">
+					<add_to_group groupname="$targets_final" list="$locsecondarytargets"/>
+				</do_if>
+			</do_for_each>
+
+			<!--if not already set, select preferred target from all available subsys targets (priority 3b)-->
+			<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+				<set_value name="$locpreferred" exact="$targets_final.random"/>
+			</do_if>
+			
+			<debug_text text="'%s %s Attack fighters active, attacking secondary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>
+			
 		</do_else>
-		-->
-		<debug_text text="'%s %s (d4) Attack fighters active.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+		
+		<debug_text text="'%s %s Attack fighters active.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
 	
-		<set_turret_targets object="this.assignedcontrolled" target="$targets_final.list" weaponmode="weaponmode.attackfighters" preferredtarget="$locpreferred"/>
-		<remove_value name="$targets_final"/>			
+		<set_turret_targets object="this.ship" target="$targets_final.list" weaponmode="weaponmode.attackfighters" preferredtarget="$locpreferred"/>
+		<remove_value name="$targets_final"/>
+		
     </do_if>
+  </replace>	
+
+  <!-- set turret targets (weapon mode: missile defence) -->
+  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$incomingmissiles.count and $turretmodes.indexof.{weaponmode.missiledefence}']">
+	<do_if value="($incomingmissiles.count or $targets_fighters.count) and $turretmodes.indexof.{weaponmode.missiledefence}">
+		<create_group groupname="$targets_final"/>
+		<set_value name="$locpreferred" exact="$preferredtarget"/>
+				
+		<do_if value="$incomingmissiles.count">	<!--Incoming missiles (priority 1)-->		
+			<add_to_group groupname="$targets_final" group="$incomingmissiles"/>
+			
+			<!--if not already set, select preferred target from incoming missiles (priority 1)-->
+			<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+				<set_value name="$locpreferred" exact="$targets_final.random"/>
+			</do_if>
+
+			<debug_text text="'%s %s Missiles defence active, attacking missiles.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+			
+		</do_if>
+		<do_else> <!--Fighters (priority 2)-->
+			<add_to_group groupname="$targets_final" group="$targets_fighters"/>
+			
+			<!--if not already set, select preferred target from fighters (priority 2)-->
+			<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
+				<set_value name="$locpreferred" exact="$targets_final.random"/>
+			</do_if>
+			
+			<debug_text text="'%s %s Missiles defence active, attacking fighters.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+			
+		</do_else>
+		
+		<debug_text text="'%s %s Missile defence active.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+	
+		<set_turret_targets object="this.ship" target="$targets_final.list" weaponmode="weaponmode.missiledefence" preferredtarget="$locpreferred"/>
+		<remove_value name="$targets_final"/>
+		
+    </do_if>
+	
+	<remove_value name="$locsubsyspref"/>
+	<remove_value name="$locsubsystarget"/>
+	<remove_value name="$locsubsystargettags"/>
   </replace>
 
 </diff>

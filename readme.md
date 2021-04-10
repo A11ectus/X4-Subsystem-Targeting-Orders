@@ -1,11 +1,12 @@
 Subsystem Targeting Orders
 by Allectus
+Contributors: Forleyor, Rovermicrover
 
 https://github.com/A11ectus/X4-Subsystem-Targeting-Orders
 
 Mod effects:
 ============
-Adds several new orders to the holomap right-click menu that allows you to direct your owned ships to explicitly target ship and station subsystems:
+Adds turret secondary targets and several new orders to the holomap right-click menu that allows you to direct your owned ships to explicitly target ship and station subsystems:
 
 -AI order: Attack Engines
 -AI order: Attack Shields
@@ -53,7 +54,25 @@ This mod adds several orders to the right click menu on the map that allow you t
 
 * AI order: Attack Station Shipyard Platforms  -- Attack station shipbuilding and outfitting modules, focussing on the closest matching target
 
+This mod further modifies turret targeting behaviour to allow for secondary targets and subsystem targeting:
+
+* Defend: No change
+
+* Attack All Enemies: attack subsystem target (if set) -> attack all enemies
+
+* Attack Capital Ships: No change
+
+* Attack Fighters: attack fighters -> attack incoming missiles -> attack subsystem target (if set)
+
+* Mining: No change    
+    
+* Missile defence: attack incoming missiles -> attack fighters
+
+* Attack My Target: No change (hardcoded by Egosoft/cannot be changed)
+
 Some Notes:
+
+	* Turret targeting behaviour is set/cleared via the 'all turrets' drop down menu in the turret interface
 
 	* Once the subsystems covered by a given order have been destroyed the order concludes and wing may be tasked elsewhere.  This allows you to string together the commands as you see fit.  I recommend basically always knocking engines out first as it much easier to hit the other targets. 
 	
@@ -99,22 +118,28 @@ Uninstall:
 
 My Thanks:
 ============
--Forleyor, the maker of the wonderful Info Center mod ( http://www.nexusmods.com/x4foundations/mods/268 ) went to great pains to help me with the icon issue and was instrumental in resolving it
+-Forleyor, the maker of the wonderful Info Center mod ( http://www.nexusmods.com/x4foundations/mods/268 ) went to great pains to help me with the icon issue and was instrumental in resolving it.  He was also provided a large fraction of the turret UI code
 
 -SirNukes for the Mod Support API ( http://www.nexusmods.com/x4foundations/mods/503 )that made the right click integration possible
 
 -Vali_Lutzifer for the German translation
 
--Rovermicrover, the maker of several Improved * mods ( https://github.com/rovermicrover ) for some tips on how to better identify turret types
+-Rovermicrover, the maker of several Improved * mods ( https://github.com/rovermicrover ) for some tips on how to better identify turret types and improve script performance
 
 -Egosoft for making such a great game and supporting the mod community
 
 History:
 ========
-1.0, 2021-03-27: Initial release
-1.1, 2021-03-27: Substantial refactor to address "question mark" icon issue.  Thanks to Forleyor for helping figure it out.
-1.2, 2021-03-28: Added German translation; modified heaviest weapon targeting routine to allow multiple instances of the order to select different targets from the list of heaviest available weapons instead of always selecting the same target (avoids massive overkill for torp runs, but will make standard gun runs a little less effective--though more cinematic!).
-1.3, 2021-03-29: Improved target handling for wings. Wingmates with the "attack" assignment should now properly follow the targeting priorities of their wing leader.
-2.0, 2021-04-02: Major feature release to support station targeting, provide generic disable command, and provide finer control over weapon targeting
-2.1, 2021-04-03: Changed capital ship aggressor requirement when targeting subsystems other than station modules to require line of sight to the target subsystem on order initiation.  Should reduce the number of destroyers trying to (ineffectually) fly around targets to gen a firing solution on targeted subsystems.
+* 1.0, 2021-03-27: Initial release
+
+* 1.1, 2021-03-27: Substantial refactor to address "question mark" icon issue.  Thanks to Forleyor for helping figure it out.
+
+* 1.2, 2021-03-28: Added German translation; modified heaviest weapon targeting routine to allow multiple instances of the order to select different targets from the list of heaviest available weapons instead of always selecting the same target (avoids massive overkill for torp runs, but will make standard gun runs a little less effective--though more cinematic!).
+
+* 1.3, 2021-03-29: Improved target handling for wings. Wingmates with the "attack" assignment should now properly follow the targeting priorities of their wing leader.
+
+* 2.0, 2021-04-02: Major feature release to support station targeting, provide generic disable command, and provide finer control over weapon targeting
+
+* 2.1, 2021-04-03: Changed capital ship aggressor requirement when targeting subsystems other than station modules to require line of sight to the target subsystem on order initiation.  Should reduce the number of destroyers trying to (ineffectually) fly around targets to gen a firing solution on targeted subsystems.
 	
+* 3.0, 2021-04-10: Added addtional targeting priorities to turrets
