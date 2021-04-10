@@ -36,13 +36,13 @@
 		<!-- Params -->		
 		<t id="4000">Ziel-Subsystem-Fokus. Identifiziert das Subsystem-Ziel, das durch Subsystem-Zielsetzungsaufträge beabsichtigt ist. Standard: null</t>	
 		<!-- Turret Commands -->
-		<t id="5000">Ziel auf Triebwerke</t>
-		<t id="5001">Ziel auf Schilde</t>
-		<t id="5002">Ziel auf Waffen, Mittlere Geschütztürme</t>
-		<t id="5003">Ziel auf Waffen, Schwere Geschütztürme</t>
-		<t id="5004">Ziel auf Waffen, Raketenwerfer</t>
-		<t id="5005">Ziel auf Waffen, Hauptbatterien</t>
-		<t id="5006">Ziel auf alle Subsysteme</t>		
-		<t id="5007">Löschen Sie Subsystemziele</t>		
+		<t id="5000">Ziel-Triebwerke</t>
+		<t id="5001">Ziel Schilde</t>
+		<t id="5002">Ziel S/M Türme</t>
+		<t id="5003">Ziel L/XL Türme</t>
+		<t id="5004">Ziel Raketentürme</t>
+		<t id="5005">Ziel Hauptbatterien</t>
+		<t id="5006">Ziel Alle Subsysteme</t>		
+		<t id="5007">Subsystem Ziel löschen</t>		
 	</page>
 </language>
