@@ -361,7 +361,7 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
                     local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
                     row[5]:setColSpan(9):createDropDown(config.turretmodesexpanded, { startOption = function () 
-						local startoption = dock_menu.getDropDownTurretModeOption(inputobject, "all") 
+						local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
 						if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
 							startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
 						end
