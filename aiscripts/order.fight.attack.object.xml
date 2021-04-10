@@ -11,7 +11,7 @@
 	
 	<do_if value="$subsystemfocus">
 		<!--relay subsystem order to turrets via NPC blackboard-->
-		<set_value name="$subsystemfocusprev" exact="this.controllable.pilot.$SubTargetPref"/>		
+		<set_value name="$subsystemfocusprev" exact="@this.controllable.pilot.$SubTargetPref"/>		
 		<set_value name="this.controllable.pilot.$SubTargetPref" exact="$subsystemfocus"/>		
 		<set_value name="$locprimarytarget" exact="@$primarytarget"/>
 		<set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>

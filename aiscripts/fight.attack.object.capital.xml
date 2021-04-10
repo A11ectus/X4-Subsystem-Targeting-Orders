@@ -2,7 +2,7 @@
 
 <diff>
   <add sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets.count and $turretmodes.indexof.{weaponmode.attackenemies}']" pos='before'>
-	<set_value name="$locsubsyspref" exact="this.controllable.pilot.$SubTargetPref"/>		
+	<set_value name="$locsubsyspref" exact="@this.controllable.pilot.$SubTargetPref"/>		
 	
 	<do_if value="$locsubsyspref == 'engines'">
 		<set_value name="$locsubsystarget" exact="[class.engine]"/>
