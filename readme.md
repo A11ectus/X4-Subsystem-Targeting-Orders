@@ -66,7 +66,7 @@ This mod further modifies turret targeting behaviour to allow for secondary targ
 
 * Mining: No change    
     
-* Missile defence: attack incoming missiles -> attack fighters
+* Missile defence: attack incoming missiles -> attack fighters (as of X4 4.0HF3 the underlying vanilla missile defence routine is broken and will not attack targets under most circumstances; this is a vanilla bug and not a result of this mod)
 
 * Attack My Target: No change (hardcoded by Egosoft/cannot be changed)
 

@@ -8,27 +8,27 @@
 		<set_value name="$locsubsystarget" exact="[class.engine]"/>
 		<set_value name="$locsubsystargettags" exact="null"/>
 	</do_if>
-	</do_elseif value="$locsubsyspref == 'targetsubshields'">
+	<do_elseif value="$locsubsyspref == 'targetsubshields'">
 		<set_value name="$locsubsystarget" exact="[class.shieldgenerator]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.large, tag.extralarge]"/>
 	</do_elseif>
-	</do_elseif value="$locsubsyspref == 'targetsubmturrets'">
+	<do_elseif value="$locsubsyspref == 'targetsubmturrets'">
 		<set_value name="$locsubsystarget" exact="[class.turret]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.small, tag.medium]"/>
 	</do_elseif>
-	</do_elseif value="$locsubsyspref == 'targetsublturrets'">
+	<do_elseif value="$locsubsyspref == 'targetsublturrets'">
 		<set_value name="$locsubsystarget" exact="[class.turret]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.large, tag.extralarge]"/>
 	</do_elseif>	
-	</do_elseif value="$locsubsyspref == 'targetsubmissiles'">
+	<do_elseif value="$locsubsyspref == 'targetsubmissiles'">
 		<set_value name="$locsubsystarget" exact="[class.missileturret]"/>
 		<set_value name="$locsubsystargettags" exact="null"/>
 	</do_elseif>		
-	</do_elseif value="$locsubsyspref == 'targetsubbatteries'">
+	<do_elseif value="$locsubsyspref == 'targetsubbatteries'">
 		<set_value name="$locsubsystarget" exact="[class.weapon]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.weapon]"/>
 	</do_elseif>			
-	</do_elseif value="$locsubsyspref == 'targetsubdisable'">
+	<do_elseif value="$locsubsyspref == 'targetsubdisable'">
 		<set_value name="$locsubsystarget" exact="[class.engine, class.missileturret, class.turret, class.shieldgenerator, class.weapon]"/>
 		<set_value name="$locsubsystargettags" exact="null"/>
 	</do_elseif>				
@@ -63,7 +63,7 @@
 						<set_value name="$locpreferred" exact="$targets_final.random"/>
 					</do_if>
 					
-					<debug_text text="'%s %s Attack enemies active, attacking primary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>
+					<debug_text text="'%s %s Attack enemies active, attacking primary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="$debugchance"/>
 				</do_if>
 			</do_if>
 			
@@ -87,10 +87,13 @@
 				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
 			
-			<debug_text text="'%s %s Attack enemies active, attacking secondary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>		
+			<debug_text text="'%s %s Attack enemies active, attacking secondary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="$debugchance"/>		
 		</do_if>
-			
-		<add_to_group groupname="$targets_final" list="$targets.list"/>	
+		
+		<do_if value="not $targets_final.count">
+			<add_to_group groupname="$targets_final" list="$targets.list"/>	
+		</do_if>
+		
 
 		<!--if not already set, select preferred from all other enemies (priority 2)-->
 		<do_if value="(not $locpreferred) or ($locpreferred and not $targets_final.indexof.{$locpreferred})">            
@@ -117,7 +120,7 @@
 				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
 			
-			<debug_text text="'%s %s Attack fighters active, attacking fighters.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+			<debug_text text="'%s %s Attack fighters active, attacking fighters.'.[$targets_fighters.count, $locpreferred]" chance="$debugchance"/>
 			
 		</do_if>
 		<do_elseif value="$incomingmissiles.count"> <!--Incoming missiles (priority 2)-->
@@ -128,7 +131,7 @@
 				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
 			
-			<debug_text text="'%s %s Attack fighters active, attacking missiles.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+			<debug_text text="'%s %s Attack fighters active, attacking missiles.'.[$incomingmissiles.count, $locpreferred]" chance="$debugchance"/>
 			
 		</do_elseif>
 		<do_else> <!--Subsystem Targets (priority 3)-->
@@ -150,7 +153,7 @@
 						<set_value name="$locpreferred" exact="$targets_final.random"/>
 					</do_if>
 					
-					<debug_text text="'%s %s Attack fighters active, attacking primary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>
+					<debug_text text="'%s %s Attack fighters active, attacking primary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="$debugchance"/>
 				</do_if>
 			</do_if>
 			
@@ -174,11 +177,11 @@
 				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
 			
-			<debug_text text="'%s %s Attack fighters active, attacking secondary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="100"/>
+			<debug_text text="'%s %s Attack fighters active, attacking secondary subsystems.'.[$locsecondarytargets.count, $locpreferred]" chance="$debugchance"/>
 			
 		</do_else>
 		
-		<debug_text text="'%s %s Attack fighters active.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+		<debug_text text="'%s %s Attack fighters active.'.[$targets_fighters.count, $locpreferred]" chance="$debugchance"/>
 	
 		<set_turret_targets object="this.ship" target="$targets_final.list" weaponmode="weaponmode.attackfighters" preferredtarget="$locpreferred"/>
 		<remove_value name="$targets_final"/>
@@ -200,7 +203,7 @@
 				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
 
-			<debug_text text="'%s %s Missiles defence active, attacking missiles.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+			<debug_text text="'%s %s Missiles defence active, attacking missiles.'.[$incomingmissiles.count, $locpreferred]" chance="$debugchance"/>
 			
 		</do_if>
 		<do_else> <!--Fighters (priority 2)-->
@@ -211,11 +214,11 @@
 				<set_value name="$locpreferred" exact="$targets_final.random"/>
 			</do_if>
 			
-			<debug_text text="'%s %s Missiles defence active, attacking fighters.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+			<debug_text text="'%s %s Missiles defence active, attacking fighters.'.[$targets_fighters.count, $locpreferred]" chance="$debugchance"/>
 			
 		</do_else>
 		
-		<debug_text text="'%s %s Missile defence active.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+		<debug_text text="'%s %s Missile defence active.'.[$incomingmissiles.count, $locpreferred]" chance="$debugchance"/>
 	
 		<set_turret_targets object="this.ship" target="$targets_final.list" weaponmode="weaponmode.missiledefence" preferredtarget="$locpreferred"/>
 		<remove_value name="$targets_final"/>
