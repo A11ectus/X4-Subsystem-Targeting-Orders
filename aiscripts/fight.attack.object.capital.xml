@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<diff>
+
+  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$incomingmissiles.count and $turretmodes.indexof.{weaponmode.missiledefence}']">
+	<do_if value="($incomingmissiles.count or $targets_fighters.count) and $turretmodes.indexof.{weaponmode.missiledefence}">
+		<create_group groupname="$targets_final"/>
+		<add_to_group groupname="$targets_final" group="$incomingmissiles"/>
+
+		<set_value name="$locpreferred" exact="$preferredtarget"/>
+		
+		<do_if value="$incomingmissiles.count">
+			<do_if value="$locpreferred">
+				<do_if value="not $incomingmissiles.indexof.{$locpreferred}">
+					<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
+				</do_if>
+			</do_if>
+			<do_else>
+				<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
+			</do_else>
+		</do_if>
+		<do_else>
+			<add_to_group groupname="$targets_final" group="$targets_fighters"/>
+			
+			<do_if value="$locpreferred">
+				<do_if value="not $targets_fighters.indexof.{$locpreferred}">
+					<set_value name="$locpreferred" exact="$targets_fighters.random"/>
+				</do_if>
+			</do_if>
+			<do_else>
+				<set_value name="$locpreferred" exact="$targets_fighters.random"/>
+			</do_else>		
+		</do_else>
+		
+		<debug_text text="'%s %s missile defence active.'.[$incomingmissiles.count, $locpreferred]" chance="100"/>
+	
+		<set_turret_targets object="this.assignedcontrolled" target="$targets_final.list" weaponmode="weaponmode.missiledefence" preferredtarget="$locpreferred"/>
+		<remove_value name="$targets_final"/>		
+    </do_if>
+  </replace>
+  
+  <replace sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets_fighters.count and $turretmodes.indexof.{weaponmode.attackfighters}']">
+	<do_if value="($targets_fighters.count or $incomingmissiles.count) and $turretmodes.indexof.{weaponmode.attackfighters}">
+		<create_group groupname="$targets_final"/>
+		<add_to_group groupname="$targets_final" group="$targets_fighters"/>
+
+		<set_value name="$locpreferred" exact="$preferredtarget"/>
+		
+		<do_if value="$targets_fighters.count">
+			<do_if value="$locpreferred">
+				<do_if value="not $targets_fighters.indexof.{$locpreferred}">
+					<set_value name="$locpreferred" exact="$targets_fighters.random"/>
+				</do_if>
+			</do_if>
+			<do_else>
+				<set_value name="$locpreferred" exact="$targets_fighters.random"/>
+			</do_else>
+		</do_if>
+		<do_else>
+			<add_to_group groupname="$targets_final" group="$incomingmissiles"/>
+			
+			<do_if value="$locpreferred">
+				<do_if value="not $incomingmissiles.indexof.{$locpreferred}">
+					<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
+				</do_if>
+			</do_if>
+			<do_else>
+				<set_value name="$locpreferred" exact="$incomingmissiles.random"/>
+			</do_else>		
+		</do_else>
+		
+		<debug_text text="'%s %s Attack fighters active.'.[$targets_fighters.count, $locpreferred]" chance="100"/>
+	
+		<set_turret_targets object="this.assignedcontrolled" target="$targets_final.list" weaponmode="weaponmode.attackfighters" preferredtarget="$locpreferred"/>
+		<remove_value name="$targets_final"/>			
+    </do_if>
+  </replace>
+
+</diff>
