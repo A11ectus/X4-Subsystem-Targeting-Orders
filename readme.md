@@ -97,7 +97,7 @@ See here for a demonstration: https://youtu.be/lxINgqgoo7U
 
 2.1 update video here: https://youtu.be/7WC-eeMZ7EY
 
-3.0 update video here: 
+3.0 update video here: https://youtu.be/f5ppEomVwYQ
 
 Install:
 ========
