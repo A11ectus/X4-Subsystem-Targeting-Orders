@@ -12,20 +12,7 @@ Nexus: https://www.nexusmods.com/x4foundations/mods/645
 
 Mod effects:
 ============
-Adds additional turret behaviours and several new orders to the holomap right-click menu that allows you to direct your owned ships to explicitly target ship and station subsystems:
-
--AI order: Attack Engines
--AI order: Attack Shields
--AI order: Attack Weps, Med Turrets
--AI order: Attack Weps, Hvy Turrets
--AI order: Attack Weps, Missile Launchers
--AI order: Attack Weps, Main Batteries
--AI order: Attack Subs, Disable All
--AI order: Attack Station Docks
--AI order: Attack Station Storage
--AI order: Attack Station Production
--AI order: Attack Station Def. Platforms
--AI order: Attack Station Shipyard Platforms
+Adds additional turret behaviours and several new orders to the holomap right-click menu that allows you to direct your owned ships to explicitly target ship and station subsystems.
 
 Requirements:
 =============
