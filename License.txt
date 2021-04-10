@@ -1,0 +1,27 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Copyright 2021 Allectus (PGP Signed)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, andor sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-----BEGIN PGP SIGNATURE-----
+
+iQJNBAEBCAA3FiEECuH3lq0SfrEBzP1BLFmEOcnsCFUFAmBxsvgZHG1vcnBoZXVz
+XzMxNEBob3RtYWlsLmNvbQAKCRAsWYQ5yewIVYZvD/0UXtsyHsoN1iPbQEpLQwzE
+XkRp63+AUI6X3QSpnoCL25fen9VACpSWG6r5ofawL7AGJ/wI5h+X9phpAe/UsPRq
+7K67MVHHVVEdJOQ+DGiIgKRWWOILmOkpb2MR+i6sPr7LY/PVMuToocJr1Jthuig9
+r1d6B0Qw9wUMEHG8InbtTRd4Rnkzup5YonwOnj6EBhb67tBDsnOuyhanyAqmYOM6
+FQc+XLqe5dEiGMb88yBbxIZ89oGt49qlNgtOEW/wQ/WRzfpu8w25gX5Vt1nN2BXL
+CSARPxoYI11oBshTcz80EIsqH0nFzyi5GzrPjKiHFMpQSpn4Q0l7SaOskn/nNBJ6
+DtzUZKpxxFmovhX8wydeIJ2urXP/iVEWgpVtBPC2wpEGnfEe0ADKx9EhAw5hn6ZS
+27DQL4+BfvA5OjAAIzNI1UhRhRFIWRpNtKH+8BMY4Rayie350HQ22s+iRDtjEXM3
+hzl7DJOGQ/2hjbujYDihvfAnsu9sI9aSYH+TNCWkar/wzfv4sX5v/yRCCqaOhJoj
+6KC3+XlvkC017+/DHEDQ7/+cM6DR1lvw13HeyhAj8q/OmWpY+wNqy0V0U/cuaLby
+6JWlVkHNBUXaQ6V5yhH8eMi50Qe8zrgWy2U7MgLBTF1CA17psiqV12exUkoYY86I
+qfMRMlzd5nO3LvnbeoPsIw==
+=CUgo
+-----END PGP SIGNATURE-----
