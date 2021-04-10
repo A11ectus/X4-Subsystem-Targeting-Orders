@@ -4,31 +4,31 @@
   <add sel="//aiscript/attention[@min='visible']/actions/do_if[@value='this.ship.pilot and (@$targets.count or $dronetargets.count or ($miningtargets.count and this.ship == player.occupiedship))']/do_else/do_if[@value='$targets.count and $turretmodes.indexof.{weaponmode.attackenemies}']" pos='before'>
 	<set_value name="$locsubsyspref" exact="this.controllable.pilot.$SubTargetPref"/>		
 	
-	<do_if value="$locsubsyspref == 'targetsubengines'">
+	<do_if value="$locsubsyspref == 'engines'">
 		<set_value name="$locsubsystarget" exact="[class.engine]"/>
 		<set_value name="$locsubsystargettags" exact="null"/>
 	</do_if>
-	<do_elseif value="$locsubsyspref == 'targetsubshields'">
+	<do_elseif value="$locsubsyspref == 'shields'">
 		<set_value name="$locsubsystarget" exact="[class.shieldgenerator]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.large, tag.extralarge]"/>
 	</do_elseif>
-	<do_elseif value="$locsubsyspref == 'targetsubmturrets'">
+	<do_elseif value="$locsubsyspref == 'weps_m'">
 		<set_value name="$locsubsystarget" exact="[class.turret]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.small, tag.medium]"/>
 	</do_elseif>
-	<do_elseif value="$locsubsyspref == 'targetsublturrets'">
+	<do_elseif value="$locsubsyspref == 'weps_l'">
 		<set_value name="$locsubsystarget" exact="[class.turret]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.large, tag.extralarge]"/>
 	</do_elseif>	
-	<do_elseif value="$locsubsyspref == 'targetsubmissiles'">
+	<do_elseif value="$locsubsyspref == 'missiles'">
 		<set_value name="$locsubsystarget" exact="[class.missileturret]"/>
 		<set_value name="$locsubsystargettags" exact="null"/>
 	</do_elseif>		
-	<do_elseif value="$locsubsyspref == 'targetsubbatteries'">
+	<do_elseif value="$locsubsyspref == 'batteries'">
 		<set_value name="$locsubsystarget" exact="[class.weapon]"/>
 		<set_value name="$locsubsystargettags" exact="[tag.weapon]"/>
 	</do_elseif>			
-	<do_elseif value="$locsubsyspref == 'targetsubdisable'">
+	<do_elseif value="$locsubsyspref == 'disable'">
 		<set_value name="$locsubsystarget" exact="[class.engine, class.missileturret, class.turret, class.shieldgenerator, class.weapon]"/>
 		<set_value name="$locsubsystargettags" exact="null"/>
 	</do_elseif>				

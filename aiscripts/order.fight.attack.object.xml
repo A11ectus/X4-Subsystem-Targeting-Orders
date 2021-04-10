@@ -10,6 +10,9 @@
 	<label name="selecttarget"/>
 	
 	<do_if value="$subsystemfocus">
+		<!--relay subsystem order to turrets via NPC blackboard-->
+		<set_value name="$subsystemfocusprev" exact="this.controllable.pilot.$SubTargetPref"/>		
+		<set_value name="this.controllable.pilot.$SubTargetPref" exact="$subsystemfocus"/>		
 		<set_value name="$locprimarytarget" exact="@$primarytarget"/>
 		<set_value name="$locsecondarytargets" exact="@$secondarytargetgroup.list"/>
 
@@ -278,6 +281,13 @@
   
   <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_else/do_for_each/do_if/create_order">
 	<param name="subsystemfocus" value="$subsystemfocus" />
+  </add>
+  
+  
+  <add sel="//aiscript/attention[@min='unknown']/actions/label[@name='finish']" pos="after">
+  	<do_if value="$subsystemfocus"> <!--reset subsystem focus-->	
+		<set_value name="this.controllable.pilot.$SubTargetPref" exact="$subsystemfocusprev"/>		
+	</do_if>
   </add>
   
 </diff>
