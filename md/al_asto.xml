@@ -23,7 +23,7 @@
     	    <event_ui_triggered screen="'WeaponModeChanged'" control="'onWeaponModeSelected'" />
     	  </conditions>
     	  <actions>
-    	    <debug_text text="'WeaponMode selected! Mode is: %s'.[event.param3]" chance="100" />
+    	    <debug_text text="'WeaponMode selected! Mode is: %s'.[event.param3]" chance="0" />
     	  </actions>
     	</cue>
 		<cue name="alASTO" namespace="this">
