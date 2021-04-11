@@ -2,7 +2,8 @@ Subsystem Targeting Orders
 
 By: Allectus
 
-Contributors: Forleyor, Rovermicrover, Vali_Lutzifer
+Contributors: Forleyor, Rovermicrover 
+Translation: Vali_Lutzifer (DE), TiomTang (CN)
 
 Github: https://github.com/A11ectus/X4-Subsystem-Targeting-Orders
 
@@ -117,8 +118,6 @@ My Thanks:
 
 -SirNukes for the Mod Support API ( http://www.nexusmods.com/x4foundations/mods/503 )that made the right click integration possible
 
--Vali_Lutzifer for the German translation
-
 -Rovermicrover, the maker of several Improved * mods ( https://github.com/rovermicrover ) for some tips on how to better identify turret types and improve script performance
 
 -Egosoft for making such a great game and supporting the mod community
@@ -140,3 +139,5 @@ History:
 * 3.0, 2021-04-10: Added additional targeting priorities/commands for turrets
 
 * 3.1, 2021-04-11: Fixed Steam version being unable to load UI.
+
+* 3.2, unreleased: Added CN translation
