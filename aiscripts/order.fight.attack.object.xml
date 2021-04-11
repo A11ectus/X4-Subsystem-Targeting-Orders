@@ -9,7 +9,7 @@
   <replace sel="//aiscript/attention[@min='unknown']/actions/label[@name='selecttarget']">
 	<label name="selecttarget"/>
 	
-	<do_if value="$subsystemfocus">
+	<do_if value="@$subsystemfocus">
 		<!--relay subsystem order to turrets via NPC blackboard-->
 		<set_value name="$subsystemfocusprev" exact="@this.controllable.pilot.$SubTargetPref"/>		
 		<set_value name="this.controllable.pilot.$SubTargetPref" exact="$subsystemfocus"/>		
@@ -285,7 +285,7 @@
   
   
   <add sel="//aiscript/attention[@min='unknown']/actions/label[@name='finish']" pos="after">
-  	<do_if value="$subsystemfocus"> <!--reset subsystem focus-->	
+  	<do_if value="@$subsystemfocus"> <!--reset subsystem focus-->	
 		<set_value name="this.controllable.pilot.$SubTargetPref" exact="$subsystemfocusprev"/>		
 	</do_if>
   </add>
