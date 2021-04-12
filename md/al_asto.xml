@@ -66,8 +66,9 @@
 						<set_value name="$target" exact="@event.param.$object" />
 						<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 						<do_if value="$ship and $ship.owner == faction.player">
-							<do_if value="($target.isclass.ship or $target.isclass.station) and (not ($target.owner == faction.player))">
-								<set_value name="$section" exact="'selected_orders'" />
+							<set_value name="$section" exact="'selected_orders'" />
+							
+							<do_if value="($target.isclass.ship or $target.isclass.station) and (not ($target.owner == faction.player))">	
 								<set_value name="$disable_flag" exact="false" />
 								
 								<do_if value="@$target.iscapitalship">
@@ -76,11 +77,12 @@
 										<set_value name="$disable_flag" exact="true" />
 										<set_value name="$text" exact="{92015, 2000}" comment="Attack Engines" />
 										<signal_cue_instantly cue="md.Interact_Menu_API.Add_Action" param = "table[
-											$id = 'order_attack_engines',
+											$id = 'order_attack_subsystem',
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackEngines
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='engines'
 										]" />
 									</do_if>
 								</do_if>
@@ -95,7 +97,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackShields
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='shields'
 										]" />
 									</do_if>
 
@@ -108,7 +111,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackMTurrets
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='weps_m'
 										]" />
 									</do_if>
 									
@@ -121,7 +125,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackLTurrets
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='weps_l'
 										]" />					
 									</do_if>
 
@@ -134,7 +139,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackMissTurrets
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='missiles'
 										]" />
 									</do_if>
 
@@ -149,7 +155,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackBatteries
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='batteries'
 										]" />					
 									</do_if>
 									
@@ -160,7 +167,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackDisable
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='disable'
 										]" />					
 									</do_if>
 								</do_if>
@@ -176,7 +184,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackStationdocks
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='stationdocks'
 										]" />
 									</do_if>
 
@@ -190,7 +199,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackStationstorage
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='stationstorage'
 										]" />
 									</do_if>
 
@@ -204,7 +214,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackStationproduction
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='stationproduction'
 										]" />
 									</do_if>
 
@@ -218,7 +229,8 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackStationdefense
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='stationdefense'
 										]" />			
 									</do_if>
 									
@@ -232,244 +244,78 @@
 											$section = $section,
 											$text = $text,
 											$icon = 'order_attack',
-											$callback = InteractMenu_OnAttackStationbuild
+											$callback = InteractMenu_OnAttackSubSys,
+											$echo='stationbuild'
 										]" />			
 									</do_if>
 
 								</do_if>
 							</do_if>						
+						</do_if>	
+						<do_if value="($ship and $ship.owner == faction.player) or ($target and $target.owner == faction.player)">
+							<set_value name="$section" exact="'interaction'" />
+							
+							<set_value name="$text" exact="{92015, 2012}" comment="Clear Turret Subsystem Target" />
+							<signal_cue_instantly cue="md.Interact_Menu_API.Add_Action" param = "table[
+								$id = 'action_clear_turret_subsys_pref',
+								$section = $section,
+								$text = $text,
+								$icon = 'order_lasertower',
+								$callback = InteractMenu_OnClearTurretPrefs
+							]" />
+							
+							<set_value name="$section" exact="'selected_orders'" />
+							
+							<set_value name="$text" exact="{92015, 2012}" comment="Clear Turret Subsystem Target" />
+							<signal_cue_instantly cue="md.Interact_Menu_API.Add_Action" param = "table[
+								$id = 'order_clear_turret_subsys',
+								$section = $section,
+								$text = $text,
+								$icon = 'order_lasertower',
+								$callback = InteractMenu_OnClearTurretPrefs
+							]" />
 						</do_if>
 						<cancel_cue cue="this" />
 					</actions>
 				</cue>
-				<cue name="InteractMenu_OnAttackEngines">
+				<cue name="InteractMenu_OnAttackSubSys">
 					<conditions>
 						<event_cue_signalled />
 					</conditions>
 					<actions>
 						<set_value name="$target" exact="event.param.$object" />
+						<set_value name="$subsyspref" exact="event.param.$echo" />
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
 								<create_order name="$order" object="$ship" id="'Attack'">
 									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'engines'" />
+									<param name="subsystemfocus" value="$subsyspref" />
 									<param name="debugchance" value="alASTO.$debugChance" />
 								</create_order>
 							</do_if>
 						</do_for_each>
 						<reset_cue cue="this" />
 					</actions>
-				</cue>
-				<cue name="InteractMenu_OnAttackShields">
+				</cue>			
+				<cue name="InteractMenu_OnClearTurretPrefs">
 					<conditions>
 						<event_cue_signalled />
 					</conditions>
 					<actions>
 						<set_value name="$target" exact="event.param.$object" />
+						<do_if value="$target.owner == faction.player">
+							<set_value name="$target.pilot.$SubTargetPref" exact="''"/>
+						</do_if>
 						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'shields'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
+								<set_value name="$ship.pilot.$SubTargetPref" exact="''"/>
 							</do_if>
 						</do_for_each>
 						<reset_cue cue="this" />
 					</actions>
-				</cue>	
-				<cue name="InteractMenu_OnAttackMTurrets">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'weps_m'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>		
-				<cue name="InteractMenu_OnAttackLTurrets">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'weps_l'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>	
-				<cue name="InteractMenu_OnAttackBatteries">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'batteries'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>					
-				<cue name="InteractMenu_OnAttackMissTurrets">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'missiles'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>		
-				<cue name="InteractMenu_OnAttackDisable">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'disable'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>						
-				<cue name="InteractMenu_OnAttackStationdocks">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'stationdocks'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>		
-				<cue name="InteractMenu_OnAttackStationstorage">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'stationstorage'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>		
-				<cue name="InteractMenu_OnAttackStationproduction">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'stationproduction'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>										
-				<cue name="InteractMenu_OnAttackStationdefense">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'stationdefense'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>		
-				<cue name="InteractMenu_OnAttackStationbuild">
-					<conditions>
-						<event_cue_signalled />
-					</conditions>
-					<actions>
-						<set_value name="$target" exact="event.param.$object" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
-							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
-							<do_if value="$ship">
-								<create_order name="$order" object="$ship" id="'Attack'">
-									<param name="primarytarget" value="$target" />
-									<param name="subsystemfocus" value="'stationbuild'" />
-									<param name="debugchance" value="alASTO.$debugChance" />
-								</create_order>
-							</do_if>
-						</do_for_each>
-						<reset_cue cue="this" />
-					</actions>
-				</cue>						
+				</cue>							
 				<cue name="OnModInstallComplete">
 					<actions>
 						<set_value name="$debugChance" exact="0" />
