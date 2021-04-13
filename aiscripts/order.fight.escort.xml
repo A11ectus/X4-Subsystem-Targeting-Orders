@@ -32,7 +32,7 @@
 		  ]"/>
   </replace>
   
-  <replace sel="//aiscript/init/do_if[5]/set_value[@name='$squadorder']">
+  <replace sel='//aiscript/init/do_if[@value="@$target.order.id == &apos;Attack&apos; and ((this.ship.hullpercentage) le $thresholdbreak)"]/set_value[@name="$squadorder"]'>
 	  <set_value name="$squadorder" exact="table[ 
 		  $id = $temp_squadorder.id,
 		  $primarytarget = $temp_squadorder.$primarytarget,

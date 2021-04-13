@@ -275,11 +275,11 @@
 	<label name="end_selecttarget"/>
   </add>
   
-  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_if[@value='$squad_attack']/do_else/do_all/do_if/create_order">
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_if[@value='$squad_attack']/do_else/do_all/do_if[@value='this.$escortgroup.indexof.{$subordinates.{$i}}']/create_order">
 	<param name="subsystemfocus" value="$subsystemfocus" />
   </add>
   
-  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_else/do_for_each/do_if/create_order">
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this.assignedcontrolled.subordinates.count and this.$escortgroup?']/do_else/do_for_each/do_if[@value='($locsub.assignment == assignment.attack) and not $locsub.subordinategroupdockoverride']/create_order">
 	<param name="subsystemfocus" value="$subsystemfocus" />
   </add>
   
