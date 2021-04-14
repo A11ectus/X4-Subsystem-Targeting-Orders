@@ -48,6 +48,8 @@ This mod adds several orders to the right click menu on the map that allow you t
 
 	* AI order: Attack Station Shipyard Platforms  -- Attack station shipbuilding and outfitting modules, focussing on the closest matching target
 
+	* AI order: Clear Turret Subsystem Target  -- Clears turret subsystem targeting priority (see below) for all selected ships
+
 This mod further modifies turret targeting behaviour to allow for secondary targets and subsystem targeting:
 
 	* Defend: No change
