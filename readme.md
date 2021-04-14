@@ -100,6 +100,8 @@ See here for a demonstration: https://youtu.be/lxINgqgoo7U
 
 3.0 update video here: https://youtu.be/f5ppEomVwYQ
 
+3.2 update video here: https://youtu.be/fpB0R7qzkwk
+
 Install:
 ========
 -Unzip to 'X4 Foundations/extensions/al_subsystem_targeting_orders'.
