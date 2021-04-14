@@ -140,4 +140,4 @@ History:
 
 * 3.1, 2021-04-11: Fixed Steam version being unable to load UI.
 
-* 3.2, unreleased: Added CN translation
+* 3.2, 2021-04-14: Added clear turrets command and CN translation; Also improved xpath specificity to improve mod compatibility 
