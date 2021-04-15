@@ -1,4 +1,5 @@
-Subsystem Targeting Orders
+Subsystem Targeting Orders:
+============
 
 By: Allectus
 
@@ -48,6 +49,8 @@ This mod adds several orders to the right click menu on the map that allow you t
 
 	* AI order: Attack Station Shipyard Platforms  -- Attack station shipbuilding and outfitting modules, focussing on the closest matching target
 
+	* AI order: Clear Turret Subsystem Target  -- Clears turret subsystem targeting priority (see below) for all selected ships	
+	
 This mod further modifies turret targeting behaviour to allow for secondary targets and subsystem targeting:
 
 	* Defend: No change
@@ -100,6 +103,8 @@ See here for a demonstration: https://youtu.be/lxINgqgoo7U
 
 3.0 update video here: https://youtu.be/f5ppEomVwYQ
 
+3.2 update video here: https://youtu.be/fpB0R7qzkwk
+
 Install:
 ========
 -Unzip to 'X4 Foundations/extensions/al_subsystem_targeting_orders'.
@@ -140,4 +145,6 @@ History:
 
 * 3.1, 2021-04-11: Fixed Steam version being unable to load UI.
 
-* 3.2, unreleased: Added CN translation
+* 3.2, 2021-04-14: Added clear turrets command and CN translation; Also improved xpath specificity to improve mod compatibility 
+
+* 3.2.1, 2021-04-15: Corrected CN translation file to remove invalid ampersand 
