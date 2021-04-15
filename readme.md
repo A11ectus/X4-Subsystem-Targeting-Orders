@@ -1,4 +1,5 @@
-Subsystem Targeting Orders
+Subsystem Targeting Orders:
+============
 
 By: Allectus
 
@@ -145,3 +146,5 @@ History:
 * 3.1, 2021-04-11: Fixed Steam version being unable to load UI.
 
 * 3.2, 2021-04-14: Added clear turrets command and CN translation; Also improved xpath specificity to improve mod compatibility 
+
+* 3.2.1, 2021-04-15: Corrected CN translation file to remove invalid ampersand 
