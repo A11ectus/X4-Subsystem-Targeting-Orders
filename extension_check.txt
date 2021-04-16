@@ -16,7 +16,6 @@ local function init()
         end
     end
 		
-	DebugError(tostring(compat))		
 	if compat == true then
 	    DebugError("Subsystem Targeting: Loading in High Compatibility Mode")
 		require('extensions.al_subsystem_targeting_orders.subsystemtargeting_hicompat')
