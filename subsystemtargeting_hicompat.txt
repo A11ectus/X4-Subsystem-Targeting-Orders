@@ -31,8 +31,8 @@ local config = {
 local function init() 
     DebugError("Subsystem Targeting Orders Init") 
  
-	Lua_loader.Load('extensions.kuertee_ui_extensions.ui.kuertee_menu_map')
-	Lua_loader.Load('extensions.kuertee_ui_extensions.ui.kuertee_menu_docked')
+	require('extensions.kuertee_ui_extensions.ui.kuertee_menu_map')
+	require('extensions.kuertee_ui_extensions.ui.kuertee_menu_docked')
  
     map_menu = Lib.Get_Egosoft_Menu("MapMenu") 
     map_menu.registerCallback("sto_addTurretBehavioursMapMenu", sto_menu.addTurretBehavioursMapMenu)

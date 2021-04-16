@@ -10,12 +10,14 @@ local function init()
     for _,extension in ipairs(extensions) do
         if extension.id == "kuerteeUIExtensionsAndHUD" and tonumber(extension.version) > 2.05 then
             DebugError("Found UIX")
-			local compat = true
+			compat = true
+			
 			break
         end
     end
-			
-	if compat then
+		
+	DebugError(tostring(compat))		
+	if compat == true then
 	    DebugError("Subsystem Targeting: Loading in High Compatibility Mode")
 		require('extensions.al_subsystem_targeting_orders.subsystemtargeting_hicompat')
 	else
