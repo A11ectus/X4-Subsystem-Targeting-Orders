@@ -1,0 +1,97 @@
+-- ffi setup 
+local ffi = require("ffi") 
+local C = ffi.C 
+ 
+local Lib = require("extensions.sn_mod_support_apis.lua_library") 
+local map_menu = {} 
+local dock_menu = {}
+local sto_menu = {} 
+ 
+local config = {
+    turretmodesexpanded = { 
+        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+        [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+        [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+        [8] = { id = "engines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
+        [9] = { id = "shields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
+        [10] = { id = "weps_m", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
+        [11] = { id = "weps_l", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
+        [12] = { id = "missiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
+        [13] = { id = "batteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
+        [14] = { id = "disable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
+        [15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false },
+    }, 
+    turretmode_t = { ["engines"] = "engines", ["shields"] = "shields", ["weps_m"] = "weps_m", ["weps_l"] = "weps_l", ["missiles"] = "missiles", ["batteries"] = "batteries", ["disable"] = "disable" },
+} 
+ 
+local function init() 
+    DebugError("Subsystem Targeting Orders Init") 
+ 
+	Lua_loader.Load('extensions.kuertee_ui_extensions.ui.kuertee_menu_map')
+	Lua_loader.Load('extensions.kuertee_ui_extensions.ui.kuertee_menu_docked')
+ 
+    map_menu = Lib.Get_Egosoft_Menu("MapMenu") 
+    map_menu.registerCallback("sto_addTurretBehavioursMapMenu", sto_menu.addTurretBehavioursMapMenu)
+
+    dock_menu = Lib.Get_Egosoft_Menu("DockedMenu")
+    dock_menu.registerCallback("sto_addTurretBehavioursDockMenu", sto_menu.addTurretBehavioursDockMenu)
+end 
+
+function sto_menu.addTurretBehavioursMapMenu(row, inputobject)
+    local pilotentityid = GetControlEntity(inputobject)
+
+    row[5]:setColSpan(9):createDropDown(config.turretmodesexpanded, { startOption = function () 
+        local startoption = map_menu.getDropDownTurretModeOption(inputobject, "all") 
+        if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
+            startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
+        end
+        return startoption
+    end
+    }) 
+    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
+        if config.turretmode_t[newturretmode] then 
+        AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+        SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
+    elseif newturretmode == "targetsubclear" then
+        map_menu.noupdate = false 
+        AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+        SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
+        else
+            map_menu.noupdate = false 
+            C.SetAllTurretModes(inputobject, newturretmode) 
+        end 
+    end
+    return true
+end
+
+function sto_menu.addTurretBehavioursDockMenu(row)
+    local pilotentityid = GetControlEntity(dock_menu.currentplayership)
+
+    row[2]:setColSpan(5):createDropDown(config.turretmodesexpanded, { startOption = function () 
+        local startoption = dock_menu.getDropDownTurretModeOption(dock_menu.currentplayership, "all")
+        if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
+            startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
+        end
+        return startoption
+    end, helpOverlayID = "docked_turretconfig_modes", helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+    row[2].handlers.onDropDownConfirmed = function(_, newturretmode)
+        if config.turretmode_t[newturretmode] then 
+            AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+            SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
+        elseif newturretmode == "targetsubclear" then
+        dock_menu.noupdate = false 
+            AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+            SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
+        else
+            dock_menu.noupdate = false 
+            C.SetAllTurretModes(dock_menu.currentplayership, newturretmode) 
+        end 
+    end
+    return true
+end
+
+init()

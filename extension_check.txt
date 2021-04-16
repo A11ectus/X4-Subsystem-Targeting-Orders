@@ -1,0 +1,31 @@
+-- ffi setup 
+local ffi = require("ffi") 
+local C = ffi.C 
+ 
+local Lib = require("extensions.sn_mod_support_apis.lua_library") 
+local sto_echeck = {} 
+ 
+local function init() 
+    DebugError("Subsystem Targeting Orders: extension_check Init") 
+ 
+	local extensions = GetExtensionList()
+	local compat = false
+    for _,extension in ipairs(extensions) do
+        if extension.id == "kuerteeUIExtensionsAndHUD" and tonumber(extension.version) > 2.05 then
+            DebugError("Found UIX")
+			local compat = true
+			break
+        end
+    end
+			
+	if compat then
+	    DebugError("Subsystem Targeting: Loading in High Compatibility Mode")
+		require('extensions.al_subsystem_targeting_orders.subsystemtargeting_hicompat')
+	else
+		DebugError("Subsystem Targeting: Loading in Stand Alone Mode")
+		require('extensions.al_subsystem_targeting_orders.subsystemtargeting')
+	end
+		
+end 
+ 
+init()
