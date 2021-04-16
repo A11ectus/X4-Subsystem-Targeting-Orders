@@ -2,9 +2,6 @@
 local ffi = require("ffi") 
 local C = ffi.C 
  
-local Lib = require("extensions.sn_mod_support_apis.lua_library") 
-local sto_echeck = {} 
- 
 local function init() 
     DebugError("Subsystem Targeting Orders: extension_check Init") 
  
