@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_2437198154" name="Subsystem Targeting Orders" author="Allectus" version="330" date="2021-04-15" save="false" enabled="1" description="Subsystem targeting commands: Adds several new orders and turret behaviours that allows you to direct your owned ships to explicitly target ship subsystems. Attack Engines, Attack Shields, Attack Weapons, and Attack specific (dock/prod/storage/def/shipyard) station modules." sync="false" lastupdate="1618149766">
+<content id="ws_2437198154" name="Subsystem Targeting Orders" author="Allectus" version="330" date="2021-04-16" save="false" enabled="1" description="Subsystem targeting commands: Adds several new orders and turret behaviours that allows you to direct your owned ships to explicitly target ship subsystems. Attack Engines, Attack Shields, Attack Weapons, and Attack specific (dock/prod/storage/def/shipyard) station modules." sync="false" lastupdate="1618572344">
   <dependency id="ws_2042901274" optional="false" name="SirNukes Mod Support APIs"/>
-  <dependency id="kuerteeUIExtensionsAndHUD"optional="true" name="kuertee UI Extensions and HUD"/>
   <text language="49" name="Subsystem Targeting Orders" description="Subsystem-Targeting-Befehle: Fügt mehrere neue Befehle und Revolver-Verhaltensweisen hinzu, mit denen Sie Ihre eigenen Schiffe anweisen können, Schiffssubsysteme explizit anzuvisieren. Angriffsmotoren, Angriffsschilde, Angriffswaffen und angriffspezifische (Dock / Prod / Storage / Def / Shipyard) Stationsmodule. " author="Allectus"/>
   <text language="86" name="Subsystem Targeting Orders" description="子系统定位命令：添加几个新的订单和炮塔行为，允许您指示您拥有的船舶明确瞄准船舶子系统。攻击引擎、攻击盾牌、攻击武器和攻击特定（船坞/生产/存储/防御/船厂）站模块。" author="Allectus"/>
 </content>
