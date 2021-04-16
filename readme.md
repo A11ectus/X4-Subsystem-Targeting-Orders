@@ -18,7 +18,11 @@ Adds additional turret behaviours and several new orders to the holomap right-cl
 
 Requirements:
 =============
-SirNukes Mod Support API
+SirNukes' Mod Support API - https://www.nexusmods.com/x4foundations/mods/503
+	Required for right click menu integration
+
+(Optional) Kuertee's UI Extensions and HUD - https://www.nexusmods.com/x4foundations/mods/552
+	If present with version of 2.06 or greater the mod will load in a high compatibility mode making it less likely (though not immune) to conflict with other UI mods
 
 What the mod does:
 ==================
