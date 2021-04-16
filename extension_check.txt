@@ -8,7 +8,7 @@ local function init()
 	local extensions = GetExtensionList()
 	local compat = false
     for _,extension in ipairs(extensions) do
-        if extension.id == "kuerteeUIExtensionsAndHUD" and tonumber(extension.version) > 2.05 then
+        if extension.id == "kuerteeUIExtensionsAndHUD" and tonumber(extension.version) >= 2.06 then
             DebugError("Found UIX")
 			compat = true
 			
