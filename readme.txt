@@ -152,3 +152,5 @@ History:
 * 3.2, 2021-04-14: Added clear turrets command and CN translation; Also improved xpath specificity to improve mod compatibility 
 
 * 3.2.1, 2021-04-15: Corrected CN translation file to remove invalid ampersand 
+
+* 3.3, 2021-04-16: Added optional check against Kuertee's UI Extension to allow for high compatibility mode to be triggered if present.
