@@ -9,7 +9,7 @@ local dock_menu = {}
 local sto_menu = {}
  
 local function init() 
-		DebugError("Subsystem Targeting Orders Test Init") 
+		DebugError("Subsystem Targeting Orders Init") 
 	 
 		require('extensions.kuertee_ui_extensions.ui.kuertee_menu_map')
 		require('extensions.kuertee_ui_extensions.ui.kuertee_menu_docked')
