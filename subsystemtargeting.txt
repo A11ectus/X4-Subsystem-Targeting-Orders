@@ -3,7 +3,7 @@ local ffi = require("ffi")
 local C = ffi.C 
  
 local Lib = require("extensions.sn_mod_support_apis.lua_library") 
-local StoLib = require("extensions.sto_test.subsystemtargeting_lua_lib") 
+local StoLib = require("extensions.al_subsystem_targeting_orders.subsystemtargeting_lua_lib") 
 local menu = {} 
 local dock_menu = {}
 local sto_menu = {} 
