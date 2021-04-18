@@ -3,6 +3,7 @@ local ffi = require("ffi")
 local C = ffi.C 
  
 local Lib = require("extensions.sn_mod_support_apis.lua_library") 
+local StoLib = require("extensions.sto_test.subsystemtargeting_lua_lib") 
 local menu = {} 
 local dock_menu = {}
 local sto_menu = {} 
@@ -46,24 +47,6 @@ local config = {
 		[4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false }, 
 		[5] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false }, 
 	}, 
-    turretmodesexpanded = { 
-		[1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
-		[2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
-		[3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
-		[4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
-		[5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
-		[6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
-		[7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
-		[8] = { id = "engines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
-		[9] = { id = "shields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
-		[10] = { id = "weps_m", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
-		[11] = { id = "weps_l", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
-		[12] = { id = "missiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
-		[13] = { id = "batteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
-		[14] = { id = "disable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
-		[15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false },
-	}, 
-	turretmode_t = { ["engines"] = "engines", ["shields"] = "shields", ["weps_m"] = "weps_m", ["weps_l"] = "weps_l", ["missiles"] = "missiles", ["batteries"] = "batteries", ["disable"] = "disable" },
     mapRowHeight = Helper.standardTextHeight, 
     mapFontSize = Helper.standardFontSize, 
     infoFrameLayer2 = 5, 
@@ -355,33 +338,11 @@ function sto_menu.setupLoadoutInfoSubmenuRows(mode, inputtable, inputobject, ins
  
             if (#menu.turrets > 0) or (#menu.turretgroups > 0) then 
                 if mode == "ship" then 
-
-					local pilotentityid = GetControlEntity(inputobject)
-					
                     local row = inputtable:addRow("info_turretconfig", { bgColor = Helper.color.transparent }) 
                     row[2]:setColSpan(3):createText(ReadText(1001, 2963)) 
-                    row[5]:setColSpan(9):createDropDown(config.turretmodesexpanded, { startOption = function () 
-						local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
-						if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
-							startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
-						end
-						return startoption
-					end
-					}) 
-                    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
 
-                        if config.turretmode_t[newturretmode] then 
-                            AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
-							SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
-						elseif newturretmode == "targetsubclear" then
-							menu.noupdate = false 
-							AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
-							SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
-                        else
-                            menu.noupdate = false 
-                            C.SetAllTurretModes(inputobject, newturretmode) 
-                        end 
-                    end 
+										StoLib.addTurretBehavioursMapMenu(row, inputobject, menu)
+										
                     row[5].handlers.onDropDownActivated = function () menu.noupdate = true end 
  
                     local row = inputtable:addRow("info_turretconfig_2", { bgColor = Helper.color.transparent }) 
@@ -1330,27 +1291,8 @@ function sto_menu.display()
                 local row = table_header:addRow("turret_config", { bgColor = Helper.color.transparent })
                 row[1]:createText(ReadText(1001, 2963))
 				
-                row[2]:setColSpan(5):createDropDown(config.turretmodesexpanded, { startOption = function () 
-                        local startoption = dock_menu.getDropDownTurretModeOption(dock_menu.currentplayership, "all")
-                        if GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
-                            startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
-                        end
-                        return startoption
-                    end, helpOverlayID = "docked_turretconfig_modes", helpOverlayText = " ", helpOverlayHighlightOnly = true  })
-                row[2].handlers.onDropDownConfirmed = function(_, newturretmode)
-
-                    if config.turretmode_t[newturretmode] then 
-                        AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
-                        SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
-                    elseif newturretmode == "targetsubclear" then
-						dock_menu.noupdate = false 
-                        AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
-                        SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
-                    else
-                        dock_menu.noupdate = false 
-                        C.SetAllTurretModes(dock_menu.currentplayership, newturretmode) 
-                    end 
-                end
+                StoLib.addTurretBehavioursDockMenu(row, dock_menu)
+								
                 row[7]:setColSpan(5):createButton({ helpOverlayID = "docked_turretconfig_arm", helpOverlayText = " ", helpOverlayHighlightOnly = true  }):setText(function () return dock_menu.areTurretsArmed(dock_menu.currentplayership) and ReadText(1001, 8631) or ReadText(1001, 8632) end, { halign = "center" })
                 row[7].handlers.onClick = function () return C.SetAllTurretsArmed(dock_menu.currentplayership, not dock_menu.areTurretsArmed(dock_menu.currentplayership)) end
 
