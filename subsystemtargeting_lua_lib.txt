@@ -1,0 +1,97 @@
+-- ffi setup 
+local ffi = require("ffi") 
+local C = ffi.C 
+
+local L = {}
+
+L.config = {
+    turretmodesexpanded = { 
+        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+        [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+        [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+        [8] = { id = "engines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false },
+        [9] = { id = "shields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false },
+        [10] = { id = "weps_m", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false },
+        [11] = { id = "weps_l", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false },
+        [12] = { id = "missiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false },
+        [13] = { id = "batteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false },
+        [14] = { id = "disable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false },
+        [15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false },
+    }, 
+    turretmodesexpanded_nopilot = { 
+        [1] = { id = "defend",          text = ReadText(1001, 8613),    icon = "",  displayremoveoption = false },
+        [2] = { id = "attackenemies",   text = ReadText(1001, 8614),    icon = "",  displayremoveoption = false },
+        [3] = { id = "attackcapital",   text = ReadText(1001, 8624),    icon = "",  displayremoveoption = false },
+        [4] = { id = "attackfighters",  text = ReadText(1001, 8625),    icon = "",  displayremoveoption = false },
+        [5] = { id = "mining",          text = ReadText(1001, 8616),    icon = "",  displayremoveoption = false },
+        [6] = { id = "missiledefence",  text = ReadText(1001, 8615),    icon = "",  displayremoveoption = false },
+        [7] = { id = "autoassist",      text = ReadText(1001, 8617),    icon = "",  displayremoveoption = false },
+        [8] = { id = "engines",   text = ReadText(92015, 5000), icon = "",  displayremoveoption = false, active = false },
+        [9] = { id = "shields",   text = ReadText(92015, 5001), icon = "",  displayremoveoption = false, active = false },
+        [10] = { id = "weps_m", text = ReadText(92015, 5002), icon = "",  displayremoveoption = false, active = false },
+        [11] = { id = "weps_l", text = ReadText(92015, 5003), icon = "",  displayremoveoption = false, active = false },
+        [12] = { id = "missiles", text = ReadText(92015, 5004), icon = "",  displayremoveoption = false, active = false },
+        [13] = { id = "batteries", text = ReadText(92015, 5005), icon = "",  displayremoveoption = false, active = false },
+        [14] = { id = "disable", text = ReadText(92015, 5006), icon = "",  displayremoveoption = false, active = false },
+        [15] = { id = "targetsubclear", text = ReadText(92015, 5007),    icon = "",  displayremoveoption = false, active = false },
+    }, 
+    turretmode_t = { ["engines"] = "engines", ["shields"] = "shields", ["weps_m"] = "weps_m", ["weps_l"] = "weps_l", ["missiles"] = "missiles", ["batteries"] = "batteries", ["disable"] = "disable" },
+} 
+
+function L.getTurretModeOptionsList(inputobject)
+    local pilotentityid = GetControlEntity(inputobject)
+		if pilotentityid == nil then
+				return L.config.turretmodesexpanded_nopilot
+		else
+				return L.config.turretmodesexpanded
+		end
+end
+
+function L.getTurretModeStartingOption(inputobject, menu)
+    local pilotentityid = GetControlEntity(inputobject)
+		local startoption = menu.getDropDownTurretModeOption(inputobject, "all") 
+		if pilotentityid ~= nil and GetNPCBlackboard(pilotentityid, "$SubTargetPref") ~= "" and GetNPCBlackboard(pilotentityid, "$SubTargetPref") then
+				startoption = GetNPCBlackboard(pilotentityid, "$SubTargetPref")
+		end
+		return startoption
+end
+
+function L.setTurretModeExpanded(inputobject, menu, newturretmode)
+    local pilotentityid = GetControlEntity(inputobject)
+		if L.config.turretmode_t[newturretmode] then 
+				AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+				SetNPCBlackboard(pilotentityid, "$SubTargetPref", newturretmode)
+		elseif newturretmode == "targetsubclear" then
+				menu.noupdate = false 
+				AddUITriggeredEvent("WeaponModeChanged", "onWeaponModeSelected", newturretmode) 
+				SetNPCBlackboard(pilotentityid, "$SubTargetPref", "")
+		else
+				menu.noupdate = false 
+				C.SetAllTurretModes(inputobject, newturretmode) 
+		end 
+end
+
+function L.addTurretBehavioursMapMenu(row, inputobject, menu)
+    row[5]:setColSpan(9):createDropDown(L.getTurretModeOptionsList(inputobject), { startOption = function () 
+        return L.getTurretModeStartingOption(inputobject, menu)
+    end
+    }) 
+    row[5].handlers.onDropDownConfirmed = function(_, newturretmode)  
+        L.setTurretModeExpanded(inputobject, menu, newturretmode)
+    end
+end
+
+function L.addTurretBehavioursDockMenu(row, menu)
+    row[2]:setColSpan(5):createDropDown(L.getTurretModeOptionsList(menu.currentplayership), { startOption = function () 
+        return L.getTurretModeStartingOption(menu.currentplayership, menu)
+    end, helpOverlayID = "docked_turretconfig_modes", helpOverlayText = " ", helpOverlayHighlightOnly = true  })
+    row[2].handlers.onDropDownConfirmed = function(_, newturretmode)
+        L.setTurretModeExpanded(menu.currentplayership, menu, newturretmode)
+    end
+end
+
+return L
