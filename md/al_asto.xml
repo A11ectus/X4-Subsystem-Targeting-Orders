@@ -285,7 +285,18 @@
 					<actions>
 						<set_value name="$target" exact="event.param.$object" />
 						<set_value name="$subsyspref" exact="event.param.$echo" />
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
+						
+						<do_if value="$subsyspref == 'Wing: engines' or $subsyspref == 'Wing: shields' or $subsyspref == 'Wing: weps_m' or $subsyspref == 'Wing: weps_l' or $subsyspref == 'Wing: missiles' or $subsyspref == 'Wing: batteries' or $subsyspref == 'Wing: disable' or $subsyspref == 'Wing: stationdocks' or $subsyspref == 'Wing: stationstorage' or $subsyspref == 'Wing: stationproduction' or $subsyspref == 'Wing: stationdefense' or $subsyspref == 'Wing: stationbuild'">
+							<set_value name="$orderships" exact="@player.occupiedship.subordinatesingroup.{player.entity.$SelectedWingID}" />
+							<substitute_text text="$subsyspref">
+								<replace string="'Wing: '" with="''" />
+							</substitute_text>
+						</do_if>
+						<do_else>
+							<set_value name="$orderships" exact="@event.param.$selectedplayerships" />
+						</do_else>
+						
+						<do_for_each name="$ship" in="@$orderships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
 								<create_order name="$order" object="$ship" id="'Attack'">
@@ -307,7 +318,18 @@
 						<do_if value="$target.owner == faction.player">
 							<set_value name="$target.pilot.$SubTargetPref" exact="''"/>
 						</do_if>
-						<do_for_each name="$ship" in="@event.param.$selectedplayerships">						
+						
+						<do_if value="$subsyspref == 'Wing: clearturretsubyspref'">
+							<set_value name="$orderships" exact="@player.occupiedship.subordinatesingroup.{player.entity.$SelectedWingID}" />
+							<substitute_text text="$subsyspref">
+								<replace string="'Wing: '" with="''" />
+							</substitute_text>
+						</do_if>
+						<do_else>
+							<set_value name="$orderships" exact="@event.param.$selectedplayerships" />
+						</do_else>
+						
+						<do_for_each name="$ship" in="@$orderships">						
 							<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 							<do_if value="$ship">
 								<set_value name="$ship.pilot.$SubTargetPref" exact="''"/>
