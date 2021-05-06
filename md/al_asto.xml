@@ -287,7 +287,15 @@
 						<set_value name="$subsyspref" exact="event.param.$echo" />
 						
 						<do_if value="$subsyspref == 'Wing: engines' or $subsyspref == 'Wing: shields' or $subsyspref == 'Wing: weps_m' or $subsyspref == 'Wing: weps_l' or $subsyspref == 'Wing: missiles' or $subsyspref == 'Wing: batteries' or $subsyspref == 'Wing: disable' or $subsyspref == 'Wing: stationdocks' or $subsyspref == 'Wing: stationstorage' or $subsyspref == 'Wing: stationproduction' or $subsyspref == 'Wing: stationdefense' or $subsyspref == 'Wing: stationbuild'">
-							<set_value name="$orderships" exact="@player.occupiedship.subordinatesingroup.{player.entity.$SelectedWingID}" />
+														
+							<do_if value="@player.entity.$SelectedWing and 
+								@player.entity.$SelectedFleetCommander.activesubordinategroupids.indexof.{@player.entity.$SelectedWingID}">						
+								<set_value name="$orderships" exact="@player.entity.$SelectedFleetCommander.subordinatesingroup.{@player.entity.$SelectedWingID}" />
+							</do_if>
+							<do_else>
+								<set_value name="$orderships" exact="[@player.entity.$SelectedFleetCommander]" />
+							</do_else>
+							
 							<substitute_text text="$subsyspref">
 								<replace string="'Wing: '" with="''" />
 							</substitute_text>
@@ -320,7 +328,16 @@
 						</do_if>
 						
 						<do_if value="$subsyspref == 'Wing: clearturretsubyspref'">
-							<set_value name="$orderships" exact="@player.occupiedship.subordinatesingroup.{player.entity.$SelectedWingID}" />
+						
+							<do_if value="@player.entity.$SelectedWing and 
+								@player.entity.$SelectedFleetCommander.activesubordinategroupids.indexof.{@player.entity.$SelectedWingID}">						
+								<set_value name="$orderships" exact="@player.entity.$SelectedFleetCommander.subordinatesingroup.{@player.entity.$SelectedWingID}" />
+							</do_if>
+							<do_else>
+								<set_value name="$orderships" exact="[@player.entity.$SelectedFleetCommander]" />
+							</do_else>
+
+						
 							<substitute_text text="$subsyspref">
 								<replace string="'Wing: '" with="''" />
 							</substitute_text>
