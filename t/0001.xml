@@ -4,6 +4,7 @@
 	<!-- "Allectus: Subsystem Targeting Orders" = "ASTO" = "1 19 20 15" = "92015" in  https://www.boxentriq.com/code-breaking/letters-to-numbers -->
 	<page id="92015" voice="no">
 		<t id="1">Allectus: Subsystem Targeting Orders</t>
+		<t id="2">Subsystem Targeting Order</t>
 		<!-- config -->
 		<t id="2">Debug log</t>
 		<t id="3">Do debug function</t>

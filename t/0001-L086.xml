@@ -4,6 +4,7 @@
 	<!-- "Allectus: Subsystem Targeting Orders" = "ASTO" = "1 19 20 15" = "92015" in  https://www.boxentriq.com/code-breaking/letters-to-numbers -->
 	<page id="92015" voice="no">
 		<t id="1">Allectus: 子系统目标任务</t>
+		<t id="2">子系统目标任务</t>
 		<!-- config -->
 		<t id="2">调试日志</t>
 		<t id="3">执行调试功能</t>
