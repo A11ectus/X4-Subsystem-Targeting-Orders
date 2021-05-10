@@ -79,7 +79,7 @@ Some Notes:
 	
 	* Turret targeting is a bit sticky by design and will not rapidly switch if new targets appear.  This is the reason I have not added attack all enemies to the stack for fighters/missile defence--they'll frequently get locked on to capitals and not do their primary job effectively.
 	
-	* When attacking with capital ships (L/XL) they will only see as valid targets subsystems that are within line of sight at order initiation (or order recycling if the initial target is destroyed).  If you see an available subsystem targeting order in the right click menu (indicating active subsystems) but your capital ships cancel the order immediately after it's issued it's because they don't have line of sight to the remaining active subsystems in that category.  This is to prevent excessive capital ship maneuvering to try and get shots on subsystems on the far side of the target.  This requirement is not enforced when targeting station modules.
+	* When attacking with capital ships (L/XL) they will only see as valid targets subsystems that are within line of sight at order initiation (or order recycling if the initial target is destroyed).  If you see an available subsystem targeting order in the right click menu (indicating active subsystems) but your capital ships cancel the order immediately after it's issued it's because they don't have line of sight to the remaining active subsystems in that category.  This is to prevent excessive capital ship maneuvering to try and get shots on subsystems on the far side of the target.  This requirement is not enforced when targeting station modules.  Carriers are exempted from this requirement, so that they may appropriately send their subordinates to attack subsystems.
 	
 	* Attack Weps, Main Batteries -- This targeting behaviour was originally rolled into the Attack Weps options but it turns out that the armoured cowling around, for example, the Behemoth's main batteries is actually pretty effective at protecting them and player ships can have a hard time finding a good attack vector without some manual help on initial positioning (in fact it's not clear that the logic is picking up on the batteries being obstructed by the hull and I haven't yet found a fix for it).  This often resulted in the target dying before any weapons were disabled if ships didn't have a good initial vector. Use wisely, commander.
 		
@@ -155,4 +155,4 @@ History:
 
 * 3.3, 2021-04-16: Added optional check against Kuertee's UI Extension to allow for high compatibility mode to be triggered if present.
 
-* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets.
+* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets; Altered the Line of Sight requirement for capital ships to NOT apply to carriers, so they may send their subordinates appropriately.
