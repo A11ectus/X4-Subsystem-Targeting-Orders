@@ -76,34 +76,6 @@
 		  </do_if>
 		</do_if>
 		
-		<do_if value="$subsystemfocus == 'weps_m' or $subsystemfocus == 'disable'">
-		  <do_if value="this.ship.iscapitalship">
-		  	<find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.small, tag.medium]" sortbydistanceto="this.ship"/>	  
-			
-			<set_value name="$target" exact="null"/>
-			<do_for_each name="$subsys" in="$locsecondarytargets">
-				<check_line_of_sight object="this.ship" target="$subsys" name="$isinview" />
-				<do_if value="$isinview">
-					<set_value name="$target" exact="$subsys"/>
-					<break/>
-				</do_if>
-			</do_for_each>
-			
-		  </do_if>
-		  <do_else>	
-			<find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.small, tag.medium]" sortbyvalue="loop.element.maxhull" sortlimit="3"/>	  
-		
-			<set_value name="$target" exact="@$locsecondarytargets.random"/>  
-		  </do_else>
-		  
-		  <debug_text text="'Attacking M Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
-		  <debug_text text="'Attacking M Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
-		  
-		  <do_if value="$subsystemfocus == 'weps_m' or ($subsystemfocus == 'disable' and $target)">
-			<resume label="end_selecttarget"/>
-		  </do_if>
-		</do_if>
-		
 		<do_if value="$subsystemfocus == 'weps_l' or $subsystemfocus == 'disable'">
 		  <do_if value="this.ship.iscapitalship">
 			<find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.large, tag.extralarge]" sortbydistanceto="this.ship"/>	  
@@ -131,7 +103,35 @@
 			<resume label="end_selecttarget"/>
 		  </do_if>
 		</do_if>
-				
+		
+		<do_if value="$subsystemfocus == 'weps_m' or $subsystemfocus == 'disable'">
+		  <do_if value="this.ship.iscapitalship">
+		  	<find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.small, tag.medium]" sortbydistanceto="this.ship"/>	  
+			
+			<set_value name="$target" exact="null"/>
+			<do_for_each name="$subsys" in="$locsecondarytargets">
+				<check_line_of_sight object="this.ship" target="$subsys" name="$isinview" />
+				<do_if value="$isinview">
+					<set_value name="$target" exact="$subsys"/>
+					<break/>
+				</do_if>
+			</do_for_each>
+			
+		  </do_if>
+		  <do_else>	
+			<find_object_component name="$locsecondarytargets" object="$primarytarget" class="[class.turret]" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true" tags="[tag.small, tag.medium]" sortbyvalue="loop.element.maxhull" sortlimit="3"/>	  
+		
+			<set_value name="$target" exact="@$locsecondarytargets.random"/>  
+		  </do_else>
+		  
+		  <debug_text text="'Attacking M Weapons %s: %s'.[$subsystemfocus, $locsecondarytargets]" chance="$debugchance"/>
+		  <debug_text text="'Attacking M Weapons %s: %s, %s, %s attacking %s, %s, %s'.[$subsystemfocus, @this.assignedcontrolled.idcode, @this.assignedcontrolled.knownname, this.assignedcontrolled, @$target.idcode, @$target.knownname, $target]" chance="$debugchance"/>
+		  
+		  <do_if value="$subsystemfocus == 'weps_m' or ($subsystemfocus == 'disable' and $target)">
+			<resume label="end_selecttarget"/>
+		  </do_if>
+		</do_if>
+						
 		<do_if value="$subsystemfocus == 'shields' or $subsystemfocus == 'disable'">
 		  <do_if value="this.ship.iscapitalship">		  		
 			<find_object_component name="$locsecondarytargets" object="$primarytarget" class="class.shieldgenerator" checkoperational="true" indestructible="false" invulnerable="false" integrated="false" multiple="true"  tags="[tag.large, tag.extralarge]" sortbydistanceto="this.ship"/>	

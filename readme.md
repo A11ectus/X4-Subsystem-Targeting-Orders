@@ -41,7 +41,7 @@ This mod adds several orders to the right click menu on the map that allow you t
 
 	* AI order: Attack Weps, Main Batteries  -- destroy fixed weapons, focusing on weapons with the highest max hp (correlates with anti-capital weapons)
 
-	* AI order: Attack Subs, Disable All  -- single command that proceeds through all of the above commands in order: engines -> missile launchers -> med turrets -> hvy turrets -> shields -> batteries
+	* AI order: Attack Subs, Disable All  -- single command that proceeds through all of the above commands in order: engines -> missile launchers -> hvy turrets -> med turrets -> shields -> batteries
 
 	* AI order: Attack Station Docks  -- Attack station dock modules, focussing on the closest matching target
 
@@ -154,3 +154,5 @@ History:
 * 3.2.1, 2021-04-15: Corrected CN translation file to remove invalid ampersand 
 
 * 3.3, 2021-04-16: Added optional check against Kuertee's UI Extension to allow for high compatibility mode to be triggered if present.
+
+* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets.
