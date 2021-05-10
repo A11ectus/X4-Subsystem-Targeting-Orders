@@ -285,6 +285,7 @@
 					<actions>
 						<set_value name="$subsyspref" exact="event.param.$echo" />						
 						<set_value name="$doaction" exact="true" />
+						<set_value name="$immed" exact="false" />
 						
 						<do_if value="event.param.$id == 'hk_attack_subsystem_whk' or event.param.$id == 'hk_attack_shields_whk' or event.param.$id == 'hk_attack_m_turrets_whk' or event.param.$id == 'hk_attack_l_turrets_whk' or event.param.$id == 'hk_attack_missturr_whk' or event.param.$id == 'hk_attack_batteries_whk' or event.param.$id == 'hk_attack_disable_whk' or event.param.$id == 'hk_attack_stationdocks_whk' or event.param.$id == 'hk_attack_stationstorage_whk' or event.param.$id == 'hk_attack_stationproduction_whk' or event.param.$id == 'hk_attack_stationdefense_whk' or event.param.$id == 'hk_attack_stationbuild_whk'">
 							<set_value name="$target" exact="player.target" />
@@ -294,6 +295,7 @@
 							<do_if value="($target.iscapitalship or $target.isclass.station) and (not ($target.owner == faction.player))   and $validselection">
 								<speak actor="player.computer" page="10002" line="132" /> <!--"Command Accepted"-->
 								<show_notification text="player.entity.$SelectedFleet + '-' + player.entity.$SelectedWing + ': ' + $subsyspref + ' ' + {92015, 2} + ' ' + {10002, 132}"/> <!--"Flt: Subsyspref Command Accepted"-->
+								<set_value name="$immed" exact="true" />
 							</do_if>
 							<do_else>
 								<speak actor="player.computer" page="10002" line="133" /> <!--"Command Rejected"-->
@@ -327,7 +329,7 @@
 							<do_for_each name="$ship" in="@$orderships">						
 								<debug_text text="'$ship: ' + $ship + ' (' + @$ship.knownname + ')'" chance="alASTO.$debugChance" />
 								<do_if value="$ship">
-									<create_order name="$order" object="$ship" id="'Attack'">
+									<create_order name="$order" object="$ship" id="'Attack'" immediate="$immed">
 										<param name="primarytarget" value="$target" />
 										<param name="subsystemfocus" value="$subsyspref" />
 										<param name="debugchance" value="alASTO.$debugChance" />
