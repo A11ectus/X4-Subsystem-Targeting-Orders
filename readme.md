@@ -63,7 +63,7 @@ This mod further modifies turret targeting behaviour to allow for secondary targ
 
 	* Attack Capital Ships: No change
 
-	* Attack Fighters: attack fighters -> attack incoming missiles -> attack subsystem target (if set)
+	* Attack Fighters: attack fighters -> attack incoming missiles -> attack subsystem target (if set) -> attack all enemies
 
 	* Mining: No change    
     
@@ -155,4 +155,4 @@ History:
 
 * 3.3, 2021-04-16: Added optional check against Kuertee's UI Extension to allow for high compatibility mode to be triggered if present.
 
-* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets; Altered the Line of Sight requirement for capital ships to NOT apply to carriers, so they may send their subordinates appropriately.
+* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets. Altered the Line of Sight requirement for capital ships to NOT apply to carriers, so they may send their subordinates appropriately.  Added attack all enemies as lowest priority targeting option for attack fighters turret commands.

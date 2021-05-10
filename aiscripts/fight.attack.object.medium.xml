@@ -181,6 +181,11 @@
 			
 		</do_else>
 		
+		<!--if no preferred targets, select targets from all other enemies (priority 4)-->
+		<do_if value="not $targets_final.count">
+			<add_to_group groupname="$targets_final" list="$targets.list"/>	
+		</do_if>
+		
 		<debug_text text="'%s %s Attack fighters active.'.[$targets_fighters.count, $locpreferred]" chance="$debugchance"/>
 	
 		<set_turret_targets object="this.ship" target="$targets_final.list" weaponmode="weaponmode.attackfighters" preferredtarget="$locpreferred"/>
