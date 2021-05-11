@@ -6,8 +6,8 @@
 		<t id="1">Allectus: Subsystem Targeting Orders</t>
 		<t id="2">Subsystem Targeting Order</t>
 		<!-- config -->
-		<t id="2">Debug log</t>
-		<t id="3">Do debug function</t>
+		<t id="1002">Debug log</t>
+		<t id="1003">Do debug function</t>
 		<!-- orders -->
 		<t id="2000">Attack Engines</t>
 		<t id="2001">Attack Shields</t>

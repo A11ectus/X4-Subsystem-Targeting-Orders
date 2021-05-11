@@ -6,8 +6,8 @@
 		<t id="1">Allectus: Subsystem Zielaufträge</t>
 		<t id="2">Subsystem Zielaufträge</t>
 		<!-- config -->
-		<t id="2">Debug-Protokoll</t>
-		<t id="3">Debug-Funktion ausführen</t>
+		<t id="1002">Debug-Protokoll</t>
+		<t id="1003">Debug-Funktion ausführen</t>
 		<!-- orders -->
 		<t id="2000">Angriff auf Triebwerke</t>
 		<t id="2001">Angriff auf Schilde</t>
