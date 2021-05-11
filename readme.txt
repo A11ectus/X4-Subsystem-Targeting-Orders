@@ -3,7 +3,7 @@ Subsystem Targeting Orders:
 
 By: Allectus
 
-Contributors: Forleyor, Rovermicrover 
+Contributors: Forleyor, Rovermicrover, runekn 
 Translation: Vali_Lutzifer (DE), TiomTang (CN)
 
 Github: https://github.com/A11ectus/X4-Subsystem-Targeting-Orders
@@ -129,6 +129,8 @@ My Thanks:
 
 -Rovermicrover, the maker of several Improved * mods ( https://github.com/rovermicrover ) for some tips on how to better identify turret types and improve script performance
 
+-runekn, the maker of the reactive docking mod (https://www.nexusmods.com/x4foundations/mods/676) for some lua simplification assistance
+
 -Egosoft for making such a great game and supporting the mod community
 
 History:
@@ -155,4 +157,4 @@ History:
 
 * 3.3, 2021-04-16: Added optional check against Kuertee's UI Extension to allow for high compatibility mode to be triggered if present.
 
-* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets. Altered the Line of Sight requirement for capital ships to NOT apply to carriers, so they may send their subordinates appropriately.  Added attack all enemies as lowest priority targeting option for attack fighters turret commands.
+* 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets. Altered the Line of Sight requirement for capital ships to NOT apply to carriers, so they may send their subordinates appropriately.  Added attack all enemies as lowest priority targeting option for attack fighters turret commands. Lua refactored to unify library functions (thanks to runekn)
