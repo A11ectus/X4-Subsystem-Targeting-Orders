@@ -21,7 +21,7 @@ Requirements:
 SirNukes' Mod Support API - https://www.nexusmods.com/x4foundations/mods/503
 	Required for right click menu integration
 
-(Optional) My Wing Hotkeys mod - 
+(Optional) My Wing Hotkeys mod - https://steamcommunity.com/sharedfiles/filedetails/?id=2484521478
 	If present will provide fleet and wing quick select options and hotkeys for the orders below
 	
 (Optional) Kuertee's UI Extensions and HUD - https://www.nexusmods.com/x4foundations/mods/552
