@@ -283,6 +283,9 @@
 	<param name="subsystemfocus" value="$subsystemfocus" />
   </add>
   
+  <add sel="//aiscript/attention[@min='unknown']/actions/do_if[@value='this.defensible.exists']/do_if[@value='$Defensible.isclass.ship']/do_if[@value='this == $Defensible.pilot']/run_script[@name='$DefensibleScript']">
+	<param name="subsystemfocus" value="$subsystemfocus" />
+  </add>
   
   <add sel="//aiscript/attention[@min='unknown']/actions/label[@name='finish']" pos="after">
   	<do_if value="@$subsystemfocus"> <!--reset subsystem focus-->	

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<diff>
+
+  <add sel="//aiscript[@name='fight.attack.object.fighter']/params">
+	<param name="subsystemfocus" default="null" type="internal" text="{92015, 4000}" comment="Target Subsystem Focus. Identifies the subsystem target intended by subsystem targeting orders. Default: null"/>
+  </add>
+  
+</diff>

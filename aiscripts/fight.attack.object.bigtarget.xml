@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<diff>
+
+  <add sel="//aiscript[@name='fight.attack.object.bigtarget']/params">
+	<param name="subsystemfocus" default="null" type="internal" text="{92015, 4000}" comment="Target Subsystem Focus. Identifies the subsystem target intended by subsystem targeting orders. Default: null"/>
+  </add>
+    
+  <add sel="//aiscript[@name='fight.attack.object.bigtarget']/attention[@min='unknown']/actions/do_while[@value='$bigtarget.canbeattacked and not $isdead']/do_if[@value='$bigtarget.canbeattacked and not this.assignedcontrolled.defencenpc']/do_all[@comment='chance of fail and attack']/do_if[@value='$bigtarget.canbeattacked and not $isdead']/do_if[@value='this.ship.distanceto.{$bigtarget} lt this.ship.maxcombatrange.all']/apply_attackstrength" pos="before">	
+	<do_if value="@$subsystemfocus">
+		<debug_text text="'Attacking Engines %s: %s, class: %s'.[$subsystemfocus, $bigtarget, $bigtarget.class]" chance="100"/>
+		<do_if value="@$subsystemfocus == 'stationdocks' or @$subsystemfocus == 'stationstorage' or @$subsystemfocus == 'stationproduction' or @$subsystemfocus == 'stationdefense' or @$subsystemfocus == 'stationbuild'">
+			<set_value name="$module" exact="$target"/>
+		</do_if>	
+		<do_else>
+			<set_value name="$surfaceelement" exact="$target"/>
+		</do_else>
+		<debug_text text="'Attacking Engines Post %s: %s, class: %s'.[$subsystemfocus, $bigtarget, $bigtarget.class]" chance="100"/>
+	</do_if>
+  </add>
+
+   <add sel="//aiscript[@name='fight.attack.object.bigtarget']/attention[@min='unknown']/actions/do_while[@value='$bigtarget.canbeattacked and not $isdead']">	
+	<do_if value="@$subsystemfocus">
+		<do_if value="$target.iswreck">
+			<resume label="finish"/>
+		</do_if>
+	</do_if>
+  </add>
+  
+</diff>
