@@ -163,3 +163,5 @@ History:
 * 3.4, 2021-05-11: Added support for Wing Hotkeys Mod; Altered disable all targeting priority to target heavy turrets before light turrets. Altered the Line of Sight requirement for capital ships to NOT apply to carriers, so they may send their subordinates appropriately.  Added attack all enemies as lowest priority targeting option for attack fighters turret commands. Lua refactored to unify library functions (thanks to runekn)
 
 * 3.5, 2021-05-13: Significantly improved (fixed, really...) out of sector targeting performance.  S/M ships and Carriers will now properly target appropriate subsystems in low attention mode. Other L/XL ships will instantly fail the line of sight check in low attention and cancel subsystem (but not station module) related orders--this seemed more reasonable then having destroyers instantly strip all subsystems without LOS or accuracy concerns.
+
+* 3.5.1, 2021-05-22: Corrected menu display error in German translation.

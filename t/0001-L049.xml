@@ -19,7 +19,7 @@
 		<t id="2007">Angriff Station Docks</t>
 		<t id="2008">Angriff Station Lager</t>
 		<t id="2009">Angriff Station Produktion</t>
-		<t id="2010">Angriff Station Verteidigungs. Plattformen</t>
+		<t id="2010">Angriff Station Verteidigung Plattformen</t>
 		<t id="2011">Angriff Station Werftplattformen</t>
 		<t id="2012">Ziel des Revolversubsystems löschen</t>
 		<!-- Description -->		
@@ -34,7 +34,7 @@
 		<t id="3008">Angriff auf die Speichermodule der vorgesehenen Station</t>
 		<t id="3009">Greifen Sie die Produktionsmodule der vorgesehenen Station an</t>
 		<t id="3010">Greifen Sie die Verteidigungsplattformen der vorgesehenen Station an</t>
-		<t id="3010">Greifen Sie die Werft-/Werftplattformen der vorgesehenen Station an</t>
+		<t id="3011">Greifen Sie die Werft-/Werftplattformen der vorgesehenen Station an</t>
 		<!-- Params -->		
 		<t id="4000">Ziel-Subsystem-Fokus. Identifiziert das Subsystem-Ziel, das durch Subsystem-Zielsetzungsaufträge beabsichtigt ist. Standard: null</t>	
 		<!-- Turret Commands -->
